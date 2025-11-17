@@ -1,6 +1,64 @@
-import Link from "next/link";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { Suspense } from "react";
+
+function HomeContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const code = searchParams.get("code");
+
+  useEffect(() => {
+    if (code) {
+      // Handle OAuth callback
+      const handleOAuthCallback = async () => {
+        const supabase = createClient();
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+        if (!error && data.session) {
+          // Check if user exists in database
+          const { data: userData } = await supabase
+            .from("users")
+            .select("id, role")
+            .eq("id", data.user.id)
+            .single();
+
+          // If user doesn't exist, create it and redirect to complete profile
+          if (!userData) {
+            await supabase.from("users").insert({
+              id: data.user.id,
+              email: data.user.email!,
+              role: "talento",
+              status: "pendiente",
+            });
+            router.push("/registro/completar-perfil?role=talento");
+          } else {
+            // User exists, redirect to dashboard
+            router.push("/dashboard");
+          }
+        } else {
+          // Error handling
+          router.push("/login?error=oauth_failed");
+        }
+      };
+
+      handleOAuthCallback();
+    }
+  }, [code, router]);
+
+  if (code) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-text-muted">Procesando autenticación...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="max-w-4xl mx-auto text-center space-y-8">
@@ -52,5 +110,13 @@ export default function Home() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
