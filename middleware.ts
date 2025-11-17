@@ -17,6 +17,3 @@ export const config = {
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
-
-// Force middleware to run in Node.js runtime instead of Edge
-export const runtime = 'nodejs';
