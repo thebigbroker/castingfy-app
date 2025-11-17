@@ -22,7 +22,7 @@ export default function RegistroPage() {
     resolver: zodResolver(registerSchema),
   });
 
-  const role = watch("role");
+  // const role = watch("role"); // TODO: Use this for conditional form fields
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
