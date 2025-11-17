@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,7 @@ import {
   type ProducerProfileFormData,
 } from "@/lib/validations/auth";
 
-export default function CompletarPerfilPage() {
+function CompletarPerfilForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roleParam = searchParams.get("role");
@@ -486,5 +486,22 @@ export default function CompletarPerfilPage() {
         </form>
       )}
     </div>
+  );
+}
+
+export default function CompletarPerfilPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-text-muted">Cargando...</p>
+          </div>
+        </div>
+      }
+    >
+      <CompletarPerfilForm />
+    </Suspense>
   );
 }
