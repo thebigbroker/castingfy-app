@@ -16,13 +16,10 @@ export default function RegistroPage() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
-
-  // const role = watch("role"); // TODO: Use this for conditional form fields
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
