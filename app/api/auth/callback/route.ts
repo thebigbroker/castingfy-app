@@ -24,7 +24,7 @@ export async function GET(request: Request) {
           id: data.user.id,
           email: data.user.email!,
           role: "talento", // Default role, can be changed later
-          status: "pendiente",
+          status: "pending",
         });
 
         // Redirect to complete profile
