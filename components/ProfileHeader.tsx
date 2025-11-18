@@ -23,7 +23,7 @@ interface ProfileHeaderProps {
 export default function ProfileHeader({ user, profile, isOwnProfile }: ProfileHeaderProps) {
   const [showChatModal, setShowChatModal] = useState(false);
 
-  const displayName = profile?.stage_name || profile?.company_name || user.email.split('@')[0];
+  const displayName = profile?.stage_name || profile?.company_name || user.email.split("@")[0];
   const avatarUrl = profile?.headshot_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&size=200&background=6dcff6&color=fff`;
 
   return (
@@ -79,7 +79,7 @@ export default function ProfileHeader({ user, profile, isOwnProfile }: ProfileHe
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
                 Editar perfil
-              </button>
+              </a>
             )}
           </div>
         </div>
