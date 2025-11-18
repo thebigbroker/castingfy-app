@@ -21,6 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://ucarecdn.com/libs/widget/3.x/uploadcare.min.css"
+        />
+      </head>
       <body className="antialiased">
         {children}
       </body>

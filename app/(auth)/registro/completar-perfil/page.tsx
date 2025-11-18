@@ -11,6 +11,7 @@ import {
   type TalentProfileFormData,
   type ProducerProfileFormData,
 } from "@/lib/validations/auth";
+import UploadcareUploader from "@/components/UploadcareUploader";
 
 function CompletarPerfilForm() {
   const router = useRouter();
@@ -289,18 +290,20 @@ function CompletarPerfilForm() {
               <h2 className="text-xl font-semibold mb-4">Fotos y videos</h2>
 
               <div>
-                <label htmlFor="headshotUrl" className="block text-sm font-medium mb-2">
-                  URL de Headshot <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium mb-2">
+                  Headshot <span className="text-red-500">*</span>
                 </label>
-                <input
-                  {...talentForm.register("headshotUrl")}
-                  type="url"
-                  id="headshotUrl"
-                  className="w-full px-4 py-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                  placeholder="https://ucarecdn.com/..."
-                />
+                <div className="mb-2">
+                  <UploadcareUploader
+                    onFileUpload={(cdnUrl) => {
+                      talentForm.setValue("headshotUrl", cdnUrl);
+                    }}
+                    imgOnly={true}
+                    value={talentForm.watch("headshotUrl")}
+                  />
+                </div>
                 <p className="mt-1 text-xs text-text-muted">
-                  Por ahora pega la URL directa. Próximamente integraremos subida de archivos.
+                  Sube tu mejor foto headshot. Puedes recortar la imagen después de subirla.
                 </p>
                 {talentForm.formState.errors.headshotUrl && (
                   <p className="mt-1 text-sm text-red-500">
@@ -310,16 +313,21 @@ function CompletarPerfilForm() {
               </div>
 
               <div>
-                <label htmlFor="reelUrl" className="block text-sm font-medium mb-2">
-                  URL de Video Reel (opcional)
+                <label className="block text-sm font-medium mb-2">
+                  Video Reel (opcional)
                 </label>
-                <input
-                  {...talentForm.register("reelUrl")}
-                  type="url"
-                  id="reelUrl"
-                  className="w-full px-4 py-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                  placeholder="https://ucarecdn.com/..."
-                />
+                <div className="mb-2">
+                  <UploadcareUploader
+                    onFileUpload={(cdnUrl) => {
+                      talentForm.setValue("reelUrl", cdnUrl);
+                    }}
+                    accept="video/*"
+                    value={talentForm.watch("reelUrl")}
+                  />
+                </div>
+                <p className="mt-1 text-xs text-text-muted">
+                  Sube tu video reel o demo. También puedes pegar una URL de YouTube o Vimeo.
+                </p>
                 {talentForm.formState.errors.reelUrl && (
                   <p className="mt-1 text-sm text-red-500">
                     {talentForm.formState.errors.reelUrl.message}
