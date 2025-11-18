@@ -12,15 +12,6 @@ interface UserData {
   status: string;
 }
 
-interface Profile {
-  stage_name?: string;
-  company_name?: string;
-  headshot_url?: string;
-  location?: string;
-  bio?: string;
-  instagram_url?: string;
-}
-
 export default function EditProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
