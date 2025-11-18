@@ -1,26 +1,39 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ProfileHeader from "@/components/ProfileHeader";
 import CreatePost from "@/components/CreatePost";
 import PostsFeed from "@/components/PostsFeed";
 import InstagramFeed from "@/components/InstagramFeed";
+import type { User } from "@supabase/supabase-js";
+
+interface UserData {
+  id: string;
+  email: string;
+  role: string;
+  status: string;
+}
+
+interface Profile {
+  stage_name?: string;
+  company_name?: string;
+  headshot_url?: string;
+  location?: string;
+  bio?: string;
+  instagram_url?: string;
+}
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [userData, setUserData] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
-
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
     const supabase = createClient();
 
     const {
@@ -63,7 +76,11 @@ export default function DashboardPage() {
     }
 
     setIsLoading(false);
-  };
+  }, [router]);
+
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData]);
 
   const handlePostCreated = () => {
     setRefreshTrigger((prev) => prev + 1);
@@ -106,11 +123,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Profile Header */}
-      <ProfileHeader
-        user={userData}
-        profile={profile}
-        isOwnProfile={true}
-      />
+      {userData && (
+        <ProfileHeader
+          user={userData}
+          profile={profile}
+          isOwnProfile={true}
+        />
+      )}
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-6 py-8">
@@ -174,10 +193,10 @@ export default function DashboardPage() {
           {/* Columna central - Posts */}
           <div className="lg:col-span-2 space-y-6">
             {/* Crear post */}
-            <CreatePost userId={user.id} onPostCreated={handlePostCreated} />
+            {user && <CreatePost userId={user.id} onPostCreated={handlePostCreated} />}
 
             {/* Feed de posts */}
-            <PostsFeed userId={user.id} refreshTrigger={refreshTrigger} />
+            {user && <PostsFeed userId={user.id} refreshTrigger={refreshTrigger} />}
           </div>
         </div>
       </div>

@@ -1,14 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
+
+interface UserData {
+  id: string;
+  email: string;
+  role: string;
+  status: string;
+}
+
+interface Profile {
+  stage_name?: string;
+  company_name?: string;
+  headshot_url?: string;
+  location?: string;
+  bio?: string;
+  instagram_url?: string;
+}
 
 export default function EditProfilePage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [userData, setUserData] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,11 +38,7 @@ export default function EditProfilePage() {
     instagramUrl: "",
   });
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
-
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
     const supabase = createClient();
 
     const {
@@ -56,7 +68,6 @@ export default function EditProfilePage() {
         .eq("user_id", authUser.id)
         .single();
 
-      setProfile(talentProfile);
       setFormData({
         stageName: talentProfile?.stage_name || "",
         companyName: "",
@@ -71,7 +82,6 @@ export default function EditProfilePage() {
         .eq("user_id", authUser.id)
         .single();
 
-      setProfile(producerProfile);
       setFormData({
         stageName: "",
         companyName: producerProfile?.company_name || "",
@@ -82,7 +92,11 @@ export default function EditProfilePage() {
     }
 
     setIsLoading(false);
-  };
+  }, [router]);
+
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,8 +137,9 @@ export default function EditProfilePage() {
       setTimeout(() => {
         router.push("/dashboard");
       }, 1500);
-    } catch (err: any) {
-      setError(err.message || "Error al actualizar el perfil");
+    } catch (err) {
+      const error = err as Error;
+      setError(error.message || "Error al actualizar el perfil");
     } finally {
       setIsSaving(false);
     }

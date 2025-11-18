@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface Post {
@@ -18,11 +18,7 @@ export default function PostsFeed({ userId, refreshTrigger }: PostsFeedProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    loadPosts();
-  }, [userId, refreshTrigger]);
-
-  const loadPosts = async () => {
+  const loadPosts = useCallback(async () => {
     setIsLoading(true);
     const supabase = createClient();
 
@@ -37,7 +33,11 @@ export default function PostsFeed({ userId, refreshTrigger }: PostsFeedProps) {
     }
 
     setIsLoading(false);
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts, refreshTrigger]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

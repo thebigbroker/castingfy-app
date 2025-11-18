@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface ProfileHeaderProps {
   user: {
@@ -36,11 +37,13 @@ export default function ProfileHeader({ user, profile, isOwnProfile }: ProfileHe
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           {/* Avatar y nombre */}
           <div className="flex flex-col md:flex-row items-center md:items-end gap-4">
-            <div className="w-40 h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white">
-              <img
+            <div className="w-40 h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white relative">
+              <Image
                 src={avatarUrl}
                 alt={displayName}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                unoptimized
               />
             </div>
 
