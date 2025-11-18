@@ -6,10 +6,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="p-6 border-b border-border bg-white">
+    <div className="min-h-screen flex flex-col bg-background">
+      <header className="p-6 border-b border-border" style={{ backgroundColor: '#ffffff' }}>
         <div className="max-w-7xl mx-auto">
-          <Link href="/" className="text-2xl font-bold text-black">
+          <Link href="/" className="text-2xl font-bold" style={{ color: '#000000' }}>
             Castingfy
           </Link>
         </div>
