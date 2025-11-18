@@ -11,6 +11,29 @@ interface UploadcareUploaderProps {
   value?: string;
 }
 
+// Uploadcare types
+interface UploadcareFileInfo {
+  cdnUrl: string;
+  uuid: string;
+  name: string;
+  size: number;
+  isImage: boolean;
+  originalImageInfo?: {
+    width: number;
+    height: number;
+  };
+}
+
+interface UploadcareWidget {
+  onUploadComplete: (callback: (info: UploadcareFileInfo) => void) => void;
+}
+
+interface WindowWithUploadcare extends Window {
+  uploadcare?: {
+    Widget: (input: HTMLInputElement | null) => UploadcareWidget;
+  };
+}
+
 export default function UploadcareUploader({
   onFileUpload,
   accept,
@@ -28,10 +51,12 @@ export default function UploadcareUploader({
     document.body.appendChild(script);
 
     script.onload = () => {
-      if (widgetRef.current && (window as any).uploadcare) {
-        const widget = (window as any).uploadcare.Widget(widgetRef.current.querySelector("input"));
+      const windowWithUploadcare = window as WindowWithUploadcare;
+      if (widgetRef.current && windowWithUploadcare.uploadcare) {
+        const inputElement = widgetRef.current.querySelector("input") as HTMLInputElement | null;
+        const widget = windowWithUploadcare.uploadcare.Widget(inputElement);
 
-        widget.onUploadComplete((info: any) => {
+        widget.onUploadComplete((info: UploadcareFileInfo) => {
           const cdnUrl = info.cdnUrl;
           onFileUpload(cdnUrl);
         });
