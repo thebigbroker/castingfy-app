@@ -91,6 +91,12 @@ export default function EditProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user) {
+      setError("Usuario no autenticado");
+      return;
+    }
+
     setIsSaving(true);
     setError(null);
     setSuccess(false);
