@@ -8,13 +8,15 @@ export default function AuthLayout({
   return (
     <div className="min-h-screen flex flex-col">
       <header className="p-6 border-b border-border">
-        <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-          Castingfy
-        </Link>
+        <div className="max-w-7xl mx-auto">
+          <Link href="/" className="text-2xl font-bold text-primary">
+            Castingfy
+          </Link>
+        </div>
       </header>
 
       <main className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-4xl">
           {children}
         </div>
       </main>

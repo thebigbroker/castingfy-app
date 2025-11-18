@@ -155,7 +155,7 @@ function CompletarPerfilForm() {
   }
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-8 max-w-2xl mx-auto">
+    <div className="bg-surface border border-border rounded-lg p-8 max-w-5xl mx-auto w-full">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Completa tu perfil</h1>
         <p className="text-text-muted">

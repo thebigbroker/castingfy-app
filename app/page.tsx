@@ -84,7 +84,7 @@ function HomeContent() {
   }
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="max-w-4xl mx-auto text-center space-y-8">
+      <div className="max-w-7xl mx-auto text-center space-y-8 w-full">
         <h1 className="text-6xl font-bold text-primary">
           Castingfy
         </h1>
