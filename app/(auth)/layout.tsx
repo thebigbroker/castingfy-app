@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Header from "@/components/Header";
 
 export default function AuthLayout({
   children,
@@ -7,13 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="p-6 border-b border-border" style={{ backgroundColor: '#ffffff' }}>
-        <div className="max-w-7xl mx-auto">
-          <Link href="/" className="text-2xl font-bold" style={{ color: '#000000' }}>
-            Castingfy
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-4xl">
