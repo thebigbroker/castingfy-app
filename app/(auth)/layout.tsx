@@ -7,9 +7,9 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="p-6 border-b border-border">
+      <header className="p-6 border-b border-border bg-white">
         <div className="max-w-7xl mx-auto">
-          <Link href="/" className="text-2xl font-bold text-primary">
+          <Link href="/" className="text-2xl font-bold text-black">
             Castingfy
           </Link>
         </div>
