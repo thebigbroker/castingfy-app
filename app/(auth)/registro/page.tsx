@@ -51,7 +51,7 @@ export default function RegistroPage() {
         id: authData.user.id,
         email: data.email,
         role: data.role,
-        status: "pending",
+        status: "verified",
         country: data.country,
         postal_code: data.postalCode,
       });
