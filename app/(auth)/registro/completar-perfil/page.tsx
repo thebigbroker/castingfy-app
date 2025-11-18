@@ -177,7 +177,7 @@ function CompletarPerfilForm() {
         </div>
         <div className="w-full bg-background rounded-full h-2">
           <div
-            className="bg-gradient-to-r from-primary to-primary-light h-2 rounded-full transition-all duration-300"
+            className="bg-primary h-2 rounded-full transition-all duration-300"
             style={{
               width: `${(currentStep / (role === "talento" ? 3 : 2)) * 100}%`,
             }}
@@ -297,7 +297,7 @@ function CompletarPerfilForm() {
                     setCurrentStep(2);
                   }
                 }}
-                className="w-full py-3 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity"
+                className="w-full py-3 bg-primary text-white font-semibold rounded-md hover:bg-primary-light transition-colors"
               >
                 Siguiente
               </button>
@@ -315,10 +315,9 @@ function CompletarPerfilForm() {
                 <div className="mb-2">
                   <UploadcareUploader
                     onFileUpload={(cdnUrl) => {
-                      talentForm.setValue("headshotUrl", cdnUrl);
+                      talentForm.setValue("headshotUrl", cdnUrl, { shouldValidate: true });
                     }}
                     imgOnly={true}
-                    value={talentForm.watch("headshotUrl")}
                   />
                 </div>
                 <p className="mt-1 text-xs text-text-muted">
@@ -338,10 +337,9 @@ function CompletarPerfilForm() {
                 <div className="mb-2">
                   <UploadcareUploader
                     onFileUpload={(cdnUrl) => {
-                      talentForm.setValue("reelUrl", cdnUrl);
+                      talentForm.setValue("reelUrl", cdnUrl, { shouldValidate: true });
                     }}
                     accept="video/*"
-                    value={talentForm.watch("reelUrl")}
                   />
                 </div>
                 <p className="mt-1 text-xs text-text-muted">
@@ -371,7 +369,7 @@ function CompletarPerfilForm() {
                       setCurrentStep(3);
                     }
                   }}
-                  className="flex-1 py-3 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity"
+                  className="flex-1 py-3 bg-primary text-white font-semibold rounded-md hover:bg-primary-light transition-colors"
                 >
                   Siguiente
                 </button>
@@ -414,7 +412,7 @@ function CompletarPerfilForm() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 py-3 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 py-3 bg-primary text-white font-semibold rounded-md hover:bg-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Creando perfil..." : "Completar registro"}
                 </button>
@@ -473,7 +471,7 @@ function CompletarPerfilForm() {
                     setCurrentStep(2);
                   }
                 }}
-                className="w-full py-3 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity"
+                className="w-full py-3 bg-primary text-white font-semibold rounded-md hover:bg-primary-light transition-colors"
               >
                 Siguiente
               </button>
@@ -515,7 +513,7 @@ function CompletarPerfilForm() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 py-3 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 py-3 bg-primary text-white font-semibold rounded-md hover:bg-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Creando perfil..." : "Completar registro"}
                 </button>

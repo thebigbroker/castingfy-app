@@ -9,6 +9,8 @@ export const registerSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
   confirmPassword: z.string(),
+  country: z.string().min(2, "Selecciona tu país"),
+  postalCode: z.string().min(3, "El código postal es requerido"),
   role: z.enum(["talento", "productor"], {
     required_error: "Selecciona un rol",
   }),

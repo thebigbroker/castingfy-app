@@ -10,17 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#0b0b10",
-        surface: "#11131a",
+        background: "#ffffff",
+        surface: "#f8f7f4",
         primary: {
-          DEFAULT: "#6dcff6",
-          light: "#a78bfa",
+          DEFAULT: "#1a1a1a",
+          light: "#4a4a4a",
         },
         text: {
-          DEFAULT: "#e8eaf1",
-          muted: "#a0a6b0",
+          DEFAULT: "#1a1a1a",
+          muted: "#666666",
         },
-        border: "rgba(109, 207, 246, 0.2)",
+        border: "#e5e5e0",
+        accent: "#d4c5a9",
       },
       borderRadius: {
         lg: "12px",

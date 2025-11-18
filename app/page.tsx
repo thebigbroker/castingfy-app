@@ -19,28 +19,51 @@ function HomeContent() {
         const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
         if (!error && data.session) {
-          // Check if user exists in database
-          const { data: userData } = await supabase
+          // Use upsert to ensure user exists in database (insert or update if exists)
+          const { error: upsertError } = await supabase
             .from("users")
-            .select("id, role")
-            .eq("id", data.user.id)
+            .upsert(
+              {
+                id: data.user.id,
+                email: data.user.email!,
+                role: "talento",
+                status: "pendiente",
+              },
+              {
+                onConflict: "id",
+                ignoreDuplicates: false, // Update if exists
+              }
+            );
+
+          if (upsertError) {
+            console.error("Error creating/updating user:", upsertError);
+            router.push("/login?error=user_creation_failed");
+            return;
+          }
+
+          // Check if user has completed profile
+          const { data: talentProfile } = await supabase
+            .from("talent_profiles")
+            .select("id")
+            .eq("user_id", data.user.id)
             .single();
 
-          // If user doesn't exist, create it and redirect to complete profile
-          if (!userData) {
-            await supabase.from("users").insert({
-              id: data.user.id,
-              email: data.user.email!,
-              role: "talento",
-              status: "pendiente",
-            });
+          const { data: producerProfile } = await supabase
+            .from("producer_profiles")
+            .select("id")
+            .eq("user_id", data.user.id)
+            .single();
+
+          // If no profile exists, redirect to complete profile
+          if (!talentProfile && !producerProfile) {
             router.push("/registro/completar-perfil?role=talento");
           } else {
-            // User exists, redirect to dashboard
+            // Profile exists, redirect to dashboard
             router.push("/dashboard");
           }
         } else {
           // Error handling
+          console.error("OAuth exchange error:", error);
           router.push("/login?error=oauth_failed");
         }
       };
@@ -62,7 +85,7 @@ function HomeContent() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="max-w-4xl mx-auto text-center space-y-8">
-        <h1 className="text-6xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+        <h1 className="text-6xl font-bold text-primary">
           Castingfy
         </h1>
 
@@ -80,7 +103,7 @@ function HomeContent() {
 
           <Link
             href="/registro"
-            className="px-8 py-4 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity"
+            className="px-8 py-4 bg-primary text-white font-semibold rounded-md hover:bg-primary-light transition-colors"
           >
             Crear cuenta
           </Link>

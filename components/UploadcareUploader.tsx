@@ -34,6 +34,10 @@ interface WindowWithUploadcare extends Window {
   };
 }
 
+// Global flag to track if script is loaded
+let uploadcareScriptLoaded = false;
+let uploadcareScriptLoading = false;
+
 export default function UploadcareUploader({
   onFileUpload,
   accept,
@@ -41,46 +45,86 @@ export default function UploadcareUploader({
   multiple = false,
   value,
 }: UploadcareUploaderProps) {
-  const widgetRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const widgetInstanceRef = useRef<UploadcareWidget | null>(null);
 
   useEffect(() => {
-    // Dynamically import Uploadcare widget script
-    const script = document.createElement("script");
-    script.src = "https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    script.onload = () => {
+    const initializeWidget = () => {
       const windowWithUploadcare = window as WindowWithUploadcare;
-      if (widgetRef.current && windowWithUploadcare.uploadcare) {
-        const inputElement = widgetRef.current.querySelector("input") as HTMLInputElement | null;
-        const widget = windowWithUploadcare.uploadcare.Widget(inputElement);
+      if (inputRef.current && windowWithUploadcare.uploadcare && !widgetInstanceRef.current) {
+        const widget = windowWithUploadcare.uploadcare.Widget(inputRef.current);
 
         widget.onUploadComplete((info: UploadcareFileInfo) => {
-          const cdnUrl = info.cdnUrl;
-          onFileUpload(cdnUrl);
+          onFileUpload(info.cdnUrl);
         });
+
+        widgetInstanceRef.current = widget;
       }
     };
 
+    // If script is already loaded, initialize immediately
+    if (uploadcareScriptLoaded) {
+      initializeWidget();
+      return;
+    }
+
+    // If script is currently loading, wait for it
+    if (uploadcareScriptLoading) {
+      const checkInterval = setInterval(() => {
+        if (uploadcareScriptLoaded) {
+          clearInterval(checkInterval);
+          initializeWidget();
+        }
+      }, 100);
+      return () => clearInterval(checkInterval);
+    }
+
+    // Load script for the first time
+    uploadcareScriptLoading = true;
+    const existingScript = document.querySelector('script[src*="uploadcare"]');
+
+    if (existingScript) {
+      uploadcareScriptLoaded = true;
+      uploadcareScriptLoading = false;
+      initializeWidget();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js";
+    script.async = true;
+
+    script.onload = () => {
+      uploadcareScriptLoaded = true;
+      uploadcareScriptLoading = false;
+      initializeWidget();
+    };
+
+    script.onerror = () => {
+      uploadcareScriptLoading = false;
+      console.error("Failed to load Uploadcare script");
+    };
+
+    document.body.appendChild(script);
+
+    // Don't remove the script on cleanup - it should persist
     return () => {
-      document.body.removeChild(script);
+      // Widget cleanup would go here if needed
     };
   }, [onFileUpload]);
 
   return (
-    <div ref={widgetRef}>
-      <input
-        type="hidden"
-        role="uploadcare-uploader"
-        data-public-key={UPLOADCARE_PUBLIC_KEY}
-        data-tabs="file url"
-        data-images-only={imgOnly}
-        data-multiple={multiple}
-        data-crop={imgOnly ? "free" : undefined}
-        data-input-accept-types={accept}
-        value={value}
-      />
-    </div>
+    <input
+      ref={inputRef}
+      type="hidden"
+      role="uploadcare-uploader"
+      data-public-key={UPLOADCARE_PUBLIC_KEY}
+      data-tabs="file url"
+      data-images-only={imgOnly}
+      data-multiple={multiple}
+      data-crop={imgOnly ? "free" : undefined}
+      data-input-accept-types={accept}
+      defaultValue={value || ""}
+    />
   );
 }
