@@ -24,7 +24,7 @@ export const talentProfileSchema = z.object({
   gender: z.string().optional(),
   height: z.number().min(100).max(250).optional(),
   bio: z.string().max(500, "La bio no puede tener más de 500 caracteres").optional(),
-  headshotUrl: z.string().url("URL de imagen inválida"),
+  headshotUrl: z.string().min(1, "El headshot es requerido").url("Debes subir una imagen válida"),
   reelUrl: z.string().url("URL de video inválida").optional().or(z.literal("")),
   languages: z.array(z.string()).optional(),
   skills: z.array(z.string()).optional(),

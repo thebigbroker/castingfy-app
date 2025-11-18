@@ -54,10 +54,22 @@ function CompletarPerfilForm() {
 
   const talentForm = useForm<TalentProfileFormData>({
     resolver: zodResolver(talentProfileSchema),
+    defaultValues: {
+      stageName: "",
+      location: "",
+      headshotUrl: "",
+      reelUrl: "",
+      bio: "",
+    },
   });
 
   const producerForm = useForm<ProducerProfileFormData>({
     resolver: zodResolver(producerProfileSchema),
+    defaultValues: {
+      companyName: "",
+      website: "",
+      credits: "",
+    },
   });
 
   const onSubmitTalent = async (data: TalentProfileFormData) => {
@@ -84,13 +96,14 @@ function CompletarPerfilForm() {
       height: data.height,
       bio: data.bio,
       headshot_url: data.headshotUrl,
-      reel_url: data.reelUrl,
-      languages: data.languages,
-      skills: data.skills,
+      reel_url: data.reelUrl || null,
+      languages: data.languages || null,
+      skills: data.skills || null,
     });
 
     if (profileError) {
-      setError(profileError.message);
+      console.error("Error creating talent profile:", profileError);
+      setError(`Error al crear el perfil: ${profileError.message}`);
       setIsLoading(false);
       return;
     }
@@ -277,7 +290,13 @@ function CompletarPerfilForm() {
 
               <button
                 type="button"
-                onClick={() => setCurrentStep(2)}
+                onClick={async () => {
+                  // Validate only current step fields
+                  const isValid = await talentForm.trigger(["stageName", "location"]);
+                  if (isValid) {
+                    setCurrentStep(2);
+                  }
+                }}
                 className="w-full py-3 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity"
               >
                 Siguiente
@@ -345,7 +364,13 @@ function CompletarPerfilForm() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCurrentStep(3)}
+                  onClick={async () => {
+                    // Validate only step 2 field
+                    const isValid = await talentForm.trigger(["headshotUrl"]);
+                    if (isValid) {
+                      setCurrentStep(3);
+                    }
+                  }}
                   className="flex-1 py-3 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity"
                 >
                   Siguiente
@@ -441,7 +466,13 @@ function CompletarPerfilForm() {
 
               <button
                 type="button"
-                onClick={() => setCurrentStep(2)}
+                onClick={async () => {
+                  // Validate only current step fields
+                  const isValid = await producerForm.trigger(["companyName"]);
+                  if (isValid) {
+                    setCurrentStep(2);
+                  }
+                }}
                 className="w-full py-3 bg-gradient-to-r from-primary to-primary-light text-background font-semibold rounded-md hover:opacity-90 transition-opacity"
               >
                 Siguiente
