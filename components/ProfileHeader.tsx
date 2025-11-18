@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 
 interface ProfileHeaderProps {
   user: {
@@ -28,7 +27,7 @@ export default function ProfileHeader({ user, profile, isOwnProfile }: ProfileHe
   const avatarUrl = profile?.headshot_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&size=200&background=6dcff6&color=fff`;
 
   return (
-    <>
+    <div>
       <div className="bg-gradient-to-r from-primary/10 to-accent/10 h-48 relative">
         {/* Gradient cover */}
       </div>
@@ -127,6 +126,6 @@ export default function ProfileHeader({ user, profile, isOwnProfile }: ProfileHe
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
