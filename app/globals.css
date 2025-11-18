@@ -18,3 +18,12 @@
     text-wrap: balance;
   }
 }
+
+/* Force white header */
+header {
+  background-color: #ffffff !important;
+}
+
+header a {
+  color: #000000 !important;
+}
