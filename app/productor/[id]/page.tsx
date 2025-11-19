@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import Image from "next/image";
 import PublicProfileCTA from "@/components/PublicProfileCTA";
 
 interface ProducerProfile {
