@@ -14,58 +14,84 @@ export async function GET(request: NextRequest) {
   try {
     console.log(`[Instagram Feed] Fetching data for username: ${username}`);
 
-    // Intentar obtener datos de Instagram usando el endpoint público
-    const response = await fetch(
-      `https://www.instagram.com/${username}/?__a=1&__d=dis`,
-      {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Accept: "application/json",
-          "Accept-Language": "en-US,en;q=0.9",
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-origin",
-        },
-        next: { revalidate: 3600 }, // Cache por 1 hora
-      }
-    );
+    // Método alternativo: obtener el HTML y parsearlo
+    const response = await fetch(`https://www.instagram.com/${username}/`, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+      },
+      next: { revalidate: 3600 }, // Cache por 1 hora
+    });
 
     console.log(`[Instagram Feed] Response status: ${response.status}`);
 
     if (!response.ok) {
-      console.error(`[Instagram Feed] Instagram API error: ${response.status} ${response.statusText}`);
-      throw new Error("Instagram API returned an error");
+      console.error(
+        `[Instagram Feed] Instagram error: ${response.status} ${response.statusText}`
+      );
+      throw new Error("Instagram returned an error");
     }
 
-    const data = await response.json();
-    console.log(`[Instagram Feed] Data received:`, JSON.stringify(data).substring(0, 200));
+    const html = await response.text();
 
-    // Extraer las fotos del perfil
-    const edges =
-      data?.graphql?.user?.edge_owner_to_timeline_media?.edges || [];
+    // Buscar el script tag con los datos JSON
+    const scriptMatch = html.match(
+      /<script type="application\/ld\+json">({.*?})<\/script>/
+    );
 
-    interface InstagramEdge {
-      node: {
-        id: string;
-        thumbnail_src?: string;
-        display_url: string;
-        shortcode: string;
-      };
+    if (!scriptMatch) {
+      // Intentar extraer datos del script window._sharedData
+      const sharedDataMatch = html.match(/window\._sharedData = ({.*?});/);
+
+      if (sharedDataMatch) {
+        const sharedData = JSON.parse(sharedDataMatch[1]);
+        const user =
+          sharedData?.entry_data?.ProfilePage?.[0]?.graphql?.user;
+
+        if (user?.edge_owner_to_timeline_media?.edges) {
+          const edges = user.edge_owner_to_timeline_media.edges;
+
+          interface InstagramEdge {
+            node: {
+              id: string;
+              thumbnail_src?: string;
+              display_url: string;
+              shortcode: string;
+            };
+          }
+
+          const photos = edges.slice(0, 6).map((edge: InstagramEdge) => ({
+            id: edge.node.id,
+            thumbnail: edge.node.thumbnail_src || edge.node.display_url,
+            url: `https://www.instagram.com/p/${edge.node.shortcode}/`,
+          }));
+
+          console.log(`[Instagram Feed] Found ${photos.length} photos via sharedData`);
+
+          return NextResponse.json({
+            success: true,
+            photos,
+            username: user.username || username,
+          });
+        }
+      }
+
+      console.warn("[Instagram Feed] Could not find Instagram data in HTML");
+      throw new Error("Could not extract Instagram data");
     }
 
-    const photos = edges.slice(0, 6).map((edge: InstagramEdge) => ({
-      id: edge.node.id,
-      thumbnail: edge.node.thumbnail_src || edge.node.display_url,
-      url: `https://www.instagram.com/p/${edge.node.shortcode}/`,
-    }));
+    const jsonData = JSON.parse(scriptMatch[1]);
+    console.log(`[Instagram Feed] Extracted JSON-LD data`);
 
-    console.log(`[Instagram Feed] Found ${photos.length} photos`);
+    // El JSON-LD no siempre tiene las fotos, así que devolvemos placeholder
+    console.log("[Instagram Feed] Instagram has blocked API access");
 
     return NextResponse.json({
-      success: true,
-      photos,
-      username: data?.graphql?.user?.username || username,
+      success: false,
+      photos: [],
+      error: "Instagram API blocked",
     });
   } catch (error) {
     console.error("[Instagram Feed] Error fetching Instagram feed:", error);
