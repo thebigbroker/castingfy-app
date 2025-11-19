@@ -43,21 +43,29 @@ export async function GET() {
         .single();
 
       // Obtener su perfil
-      let otherProfile = null;
+      let displayName = otherUser?.email?.split("@")[0] || "";
+      let avatarUrl = null;
+
       if (otherUser?.role === "talento") {
         const { data } = await supabase
           .from("talent_profiles")
           .select("stage_name, headshot_url")
           .eq("user_id", otherUserId)
           .single();
-        otherProfile = data;
+        if (data) {
+          displayName = data.stage_name || displayName;
+          avatarUrl = data.headshot_url;
+        }
       } else if (otherUser?.role === "productor") {
         const { data } = await supabase
           .from("producer_profiles")
           .select("company_name, headshot_url")
           .eq("user_id", otherUserId)
           .single();
-        otherProfile = data;
+        if (data) {
+          displayName = data.company_name || displayName;
+          avatarUrl = data.headshot_url;
+        }
       }
 
       // Obtener último mensaje
@@ -81,11 +89,8 @@ export async function GET() {
         id: conv.id,
         otherUser: {
           ...otherUser,
-          displayName:
-            otherProfile?.stage_name ||
-            otherProfile?.company_name ||
-            otherUser?.email?.split("@")[0],
-          avatarUrl: otherProfile?.headshot_url,
+          displayName,
+          avatarUrl,
         },
         lastMessage,
         unreadCount: unreadCount || 0,
