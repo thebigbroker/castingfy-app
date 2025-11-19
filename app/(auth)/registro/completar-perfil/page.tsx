@@ -22,6 +22,8 @@ function CompletarPerfilForm() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [postalCode, setPostalCode] = useState("");
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   useEffect(() => {
     async function checkAuth() {
@@ -51,6 +53,33 @@ function CompletarPerfilForm() {
 
     checkAuth();
   }, [router, roleParam]);
+
+  const handlePostalCodeChange = async (code: string) => {
+    setPostalCode(code);
+
+    // Solo buscar si tiene al menos 4 dígitos
+    if (code.length >= 4) {
+      setIsLoadingLocation(true);
+      try {
+        // Intentar con España primero (ES)
+        const response = await fetch(`https://api.zippopotam.us/ES/${code}`);
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.places && data.places.length > 0) {
+            const place = data.places[0];
+            const location = `${place["place name"]}, ${data.country}`;
+            talentForm.setValue("location", location);
+            producerForm.setValue("location", location);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching location:", error);
+      } finally {
+        setIsLoadingLocation(false);
+      }
+    }
+  };
 
   const talentForm = useForm<TalentProfileFormData>({
     resolver: zodResolver(talentProfileSchema),
@@ -215,22 +244,41 @@ function CompletarPerfilForm() {
                 )}
               </div>
 
-              <div>
-                <label htmlFor="location" className="block text-sm font-medium mb-2">
-                  Ubicación <span className="text-red-500">*</span>
-                </label>
-                <input
-                  {...talentForm.register("location")}
-                  type="text"
-                  id="location"
-                  className="w-full px-4 py-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                  placeholder="Madrid, España"
-                />
-                {talentForm.formState.errors.location && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {talentForm.formState.errors.location.message}
-                  </p>
-                )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="postalCode" className="block text-sm font-medium mb-2">
+                    Código Postal
+                  </label>
+                  <input
+                    type="text"
+                    id="postalCode"
+                    value={postalCode}
+                    onChange={(e) => handlePostalCodeChange(e.target.value)}
+                    className="w-full px-4 py-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    placeholder="28001"
+                  />
+                  {isLoadingLocation && (
+                    <p className="mt-1 text-sm text-primary">Buscando ubicación...</p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="location" className="block text-sm font-medium mb-2">
+                    Ubicación <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    {...talentForm.register("location")}
+                    type="text"
+                    id="location"
+                    className="w-full px-4 py-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    placeholder="Madrid, España"
+                  />
+                  {talentForm.formState.errors.location && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {talentForm.formState.errors.location.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
