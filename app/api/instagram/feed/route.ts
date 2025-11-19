@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    console.log(`[Instagram Feed] Fetching data for username: ${username}`);
+
     // Intentar obtener datos de Instagram usando el endpoint público
     const response = await fetch(
       `https://www.instagram.com/${username}/?__a=1&__d=dis`,
@@ -29,11 +31,15 @@ export async function GET(request: NextRequest) {
       }
     );
 
+    console.log(`[Instagram Feed] Response status: ${response.status}`);
+
     if (!response.ok) {
+      console.error(`[Instagram Feed] Instagram API error: ${response.status} ${response.statusText}`);
       throw new Error("Instagram API returned an error");
     }
 
     const data = await response.json();
+    console.log(`[Instagram Feed] Data received:`, JSON.stringify(data).substring(0, 200));
 
     // Extraer las fotos del perfil
     const edges =
@@ -54,13 +60,15 @@ export async function GET(request: NextRequest) {
       url: `https://www.instagram.com/p/${edge.node.shortcode}/`,
     }));
 
+    console.log(`[Instagram Feed] Found ${photos.length} photos`);
+
     return NextResponse.json({
       success: true,
       photos,
       username: data?.graphql?.user?.username || username,
     });
   } catch (error) {
-    console.error("Error fetching Instagram feed:", error);
+    console.error("[Instagram Feed] Error fetching Instagram feed:", error);
 
     // Fallback: devolver array vacío para que el frontend use placeholders
     return NextResponse.json({

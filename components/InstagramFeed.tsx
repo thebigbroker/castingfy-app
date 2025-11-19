@@ -40,16 +40,21 @@ export default function InstagramFeed({ instagramUrl }: InstagramFeedProps) {
       setIsLoading(true);
       setError(false);
 
+      console.log(`[InstagramFeed] Fetching photos for: ${user}`);
       const response = await fetch(`/api/instagram/feed?username=${user}`);
       const data = await response.json();
 
+      console.log(`[InstagramFeed] Response:`, data);
+
       if (data.success && data.photos.length > 0) {
+        console.log(`[InstagramFeed] Successfully loaded ${data.photos.length} photos`);
         setPhotos(data.photos);
       } else {
+        console.warn(`[InstagramFeed] No photos found or error occurred`);
         setError(true);
       }
     } catch (err) {
-      console.error("Error fetching Instagram photos:", err);
+      console.error("[InstagramFeed] Error fetching Instagram photos:", err);
       setError(true);
     } finally {
       setIsLoading(false);
