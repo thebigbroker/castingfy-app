@@ -125,11 +125,12 @@ export default function DashboardPage() {
       </div>
 
       {/* Profile Header */}
-      {userData && (
+      {userData && user && (
         <ProfileHeader
           user={userData}
           profile={profile}
           isOwnProfile={true}
+          currentUserId={user.id}
         />
       )}
 

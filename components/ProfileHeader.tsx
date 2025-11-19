@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import ChatModal from "@/components/ChatModal";
 
 interface ProfileHeaderProps {
   user: {
@@ -19,13 +20,39 @@ interface ProfileHeaderProps {
     instagram_url?: string;
   } | null;
   isOwnProfile: boolean;
+  currentUserId?: string;
 }
 
-export default function ProfileHeader({ user, profile, isOwnProfile }: ProfileHeaderProps) {
+export default function ProfileHeader({ user, profile, isOwnProfile, currentUserId }: ProfileHeaderProps) {
   const [showChatModal, setShowChatModal] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [isCreatingConversation, setIsCreatingConversation] = useState(false);
 
   const displayName = profile?.stage_name || profile?.company_name || user.email.split("@")[0];
   const avatarUrl = profile?.headshot_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&size=200&background=6dcff6&color=fff`;
+
+  const handleChatClick = async () => {
+    if (!currentUserId) return;
+
+    setIsCreatingConversation(true);
+    try {
+      const response = await fetch("/api/chat/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ otherUserId: user.id }),
+      });
+
+      const data = await response.json();
+      if (data.conversationId) {
+        setConversationId(data.conversationId);
+        setShowChatModal(true);
+      }
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+    } finally {
+      setIsCreatingConversation(false);
+    }
+  };
 
   return (
     <div>
@@ -61,10 +88,11 @@ export default function ProfileHeader({ user, profile, isOwnProfile }: ProfileHe
 
           {/* Botones de acción */}
           <div className="flex gap-3 justify-center md:justify-end">
-            {!isOwnProfile && (
+            {!isOwnProfile && currentUserId && (
               <button
-                onClick={() => setShowChatModal(true)}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold flex items-center gap-2"
+                onClick={handleChatClick}
+                disabled={isCreatingConversation}
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold flex items-center gap-2 disabled:opacity-50"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -105,29 +133,15 @@ export default function ProfileHeader({ user, profile, isOwnProfile }: ProfileHe
         )}
       </div>
 
-      {/* Modal Chat Próximamente */}
-      {showChatModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-8 max-w-md w-full shadow-2xl">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Chat - Próximamente</h3>
-              <p className="text-text-muted mb-6">
-                Estamos trabajando en el sistema de mensajería para que puedas chatear directamente con otros usuarios.
-              </p>
-              <button
-                onClick={() => setShowChatModal(false)}
-                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold w-full"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Chat Modal */}
+      {currentUserId && conversationId && (
+        <ChatModal
+          isOpen={showChatModal}
+          onClose={() => setShowChatModal(false)}
+          conversationId={conversationId}
+          otherUserName={displayName}
+          currentUserId={currentUserId}
+        />
       )}
     </div>
   );
