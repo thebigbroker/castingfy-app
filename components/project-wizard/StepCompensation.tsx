@@ -2,9 +2,29 @@
 
 import { useState, useEffect } from "react";
 
+interface CompensationData {
+  rateType: string;
+  amount: number | null;
+  currency: string;
+  notes: string;
+}
+
+interface Role {
+  id: string;
+  name: string;
+  category: string;
+}
+
+interface ProjectData {
+  roles: Role[];
+  compensation?: {
+    byRole: Record<string, CompensationData>;
+  };
+}
+
 interface StepCompensationProps {
-  data: any;
-  onUpdate: (updates: any) => void;
+  data: ProjectData;
+  onUpdate: (updates: Partial<ProjectData>) => void;
   onSave: () => void;
   onBack: () => void;
 }
@@ -24,14 +44,14 @@ export default function StepCompensation({
   onSave,
   onBack,
 }: StepCompensationProps) {
-  const [compensationData, setCompensationData] = useState<Record<string, any>>(
-    data.compensation?.byRole || {}
-  );
+  const [compensationData, setCompensationData] = useState<
+    Record<string, CompensationData>
+  >(data.compensation?.byRole || {});
 
   useEffect(() => {
     // Initialize compensation for each role
-    const initialData: Record<string, any> = {};
-    data.roles.forEach((role: any) => {
+    const initialData: Record<string, CompensationData> = {};
+    data.roles.forEach((role: Role) => {
       if (!compensationData[role.id]) {
         initialData[role.id] = {
           rateType: "",
@@ -43,14 +63,15 @@ export default function StepCompensation({
     });
 
     if (Object.keys(initialData).length > 0) {
-      setCompensationData({ ...compensationData, ...initialData });
+      setCompensationData((prev) => ({ ...prev, ...initialData }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.roles]);
 
   const handleCompensationChange = (
     roleId: string,
-    field: string,
-    value: any
+    field: keyof CompensationData,
+    value: string | number | null
   ) => {
     const updated = {
       ...compensationData,
@@ -123,7 +144,7 @@ export default function StepCompensation({
 
       {/* Compensation for each role */}
       <div className="space-y-6">
-        {data.roles.map((role: any) => (
+        {data.roles.map((role: Role) => (
           <section
             key={role.id}
             className="bg-white border border-border rounded-lg p-6"

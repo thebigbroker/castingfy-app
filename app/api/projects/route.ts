@@ -146,7 +146,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   // Map the data to database fields
-  const updates: any = {};
+  const updates: Record<string, unknown> = {};
   if (data.title !== undefined) updates.title = data.title;
   if (data.description !== undefined) updates.description = data.description;
   if (data.type !== undefined) updates.project_type = data.type;

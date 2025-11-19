@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import StepProjectDetails from "./StepProjectDetails";
 import StepRoles from "./StepRoles";
 import StepCompensation from "./StepCompensation";
@@ -93,7 +92,6 @@ export default function ProjectWizard({
   onClose,
   onSave,
 }: ProjectWizardProps) {
-  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",

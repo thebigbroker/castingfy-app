@@ -2,10 +2,35 @@
 
 import { useState } from "react";
 
+interface Role {
+  id?: string;
+  category: string;
+  subtype: string;
+  name: string;
+  description: string;
+  ageMin: number;
+  ageMax: number;
+  isRemote: boolean;
+  requirements: {
+    gender: string[];
+    ethnicity: string[];
+    skills: string[];
+    media: string[];
+    accent: string[];
+    language: string[];
+    voiceStyle: string[];
+    softwareSkills: string[];
+  };
+  flags: {
+    nudity: boolean;
+    explicitContent: boolean;
+  };
+}
+
 interface RoleFormProps {
   category: string;
-  initialData?: any;
-  onSave: (role: any) => void;
+  initialData?: Role;
+  onSave: (role: Role) => void;
   onCancel: () => void;
 }
 

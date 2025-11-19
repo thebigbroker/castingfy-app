@@ -3,9 +3,38 @@
 import { useState } from "react";
 import RoleForm from "./RoleForm";
 
+interface Role {
+  id: string;
+  category: string;
+  subtype: string;
+  name: string;
+  description: string;
+  ageMin: number;
+  ageMax: number;
+  isRemote: boolean;
+  requirements: {
+    gender: string[];
+    ethnicity: string[];
+    skills: string[];
+    media: string[];
+    accent: string[];
+    language: string[];
+    voiceStyle: string[];
+    softwareSkills: string[];
+  };
+  flags: {
+    nudity: boolean;
+    explicitContent: boolean;
+  };
+}
+
+interface ProjectData {
+  roles: Role[];
+}
+
 interface StepRolesProps {
-  data: any;
-  onUpdate: (updates: any) => void;
+  data: ProjectData;
+  onUpdate: (updates: Partial<ProjectData>) => void;
   onSave: () => void;
 }
 
@@ -56,7 +85,7 @@ const ROLE_CATEGORIES = [
 
 export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [editingRole, setEditingRole] = useState<any | null>(null);
+  const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [showForm, setShowForm] = useState(false);
 
   const handleCategoryClick = (categoryId: string) => {
@@ -65,9 +94,9 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
     setShowForm(true);
   };
 
-  const handleSaveRole = (role: any) => {
+  const handleSaveRole = (role: Role) => {
     const updatedRoles = editingRole
-      ? data.roles.map((r: any) => (r.id === editingRole.id ? role : r))
+      ? data.roles.map((r: Role) => (r.id === editingRole.id ? role : r))
       : [...data.roles, { ...role, id: Date.now().toString() }];
 
     onUpdate({ roles: updatedRoles });
@@ -77,7 +106,7 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
     onSave();
   };
 
-  const handleEditRole = (role: any) => {
+  const handleEditRole = (role: Role) => {
     setEditingRole(role);
     setSelectedCategory(role.category);
     setShowForm(true);
@@ -85,7 +114,7 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
 
   const handleDeleteRole = (roleId: string) => {
     if (confirm("¿Eliminar este rol?")) {
-      const updatedRoles = data.roles.filter((r: any) => r.id !== roleId);
+      const updatedRoles = data.roles.filter((r: Role) => r.id !== roleId);
       onUpdate({ roles: updatedRoles });
       onSave();
     }
@@ -114,7 +143,7 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
       <div>
         <h1 className="text-3xl font-bold mb-2">Add a Role</h1>
         <p className="text-text-muted">
-          Select the type of talent you're looking for
+          Select the type of talent you&apos;re looking for
         </p>
       </div>
 
@@ -129,7 +158,7 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
           </div>
 
           <div className="space-y-3">
-            {data.roles.map((role: any) => (
+            {data.roles.map((role: Role) => (
               <div
                 key={role.id}
                 className="flex items-center justify-between p-4 bg-surface rounded-lg hover:bg-border transition-colors"

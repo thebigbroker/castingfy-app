@@ -2,9 +2,24 @@
 
 import { useState } from "react";
 
+interface ProjectData {
+  title: string;
+  type: string;
+  description: string;
+  unionStatus: string;
+  datesAndLocations: string;
+  hireFrom: string;
+  hasSpecialInstructions: boolean;
+  specialInstructions: string;
+  materials: {
+    media: string[];
+    texts: string[];
+  };
+}
+
 interface ProjectDetailsProps {
-  data: any;
-  onUpdate: (updates: any) => void;
+  data: ProjectData;
+  onUpdate: (updates: Partial<ProjectData>) => void;
   onSave: () => void;
   onSaveAndContinue: () => void;
 }
@@ -40,7 +55,10 @@ export default function StepProjectDetails({
     data.hasSpecialInstructions
   );
 
-  const handleFieldChange = (field: string, value: any) => {
+  const handleFieldChange = <K extends keyof ProjectData>(
+    field: K,
+    value: ProjectData[K]
+  ) => {
     onUpdate({ [field]: value });
   };
 

@@ -2,9 +2,30 @@
 
 import { useState } from "react";
 
+interface PrescreenQuestion {
+  id: string;
+  question: string;
+  type: string;
+}
+
+interface Role {
+  id: string;
+  name: string;
+}
+
+interface ProjectData {
+  title: string;
+  roles: Role[];
+  prescreens?: {
+    questions: PrescreenQuestion[];
+    mediaRequirements: string[];
+    auditionInstructions: string;
+  };
+}
+
 interface StepPrescreensProps {
-  data: any;
-  onUpdate: (updates: any) => void;
+  data: ProjectData;
+  onUpdate: (updates: Partial<ProjectData>) => void;
   onSave: () => void;
   onFinish: () => void;
 }
@@ -32,7 +53,7 @@ export default function StepPrescreens({
   onSave,
   onFinish,
 }: StepPrescreensProps) {
-  const [questions, setQuestions] = useState<any[]>(
+  const [questions, setQuestions] = useState<PrescreenQuestion[]>(
     data.prescreens?.questions || []
   );
   const [mediaRequirements, setMediaRequirements] = useState<string[]>(
@@ -81,7 +102,7 @@ export default function StepPrescreens({
   };
 
   const updatePrescreens = (
-    q: any[],
+    q: PrescreenQuestion[],
     m: string[],
     instructions: string
   ) => {
