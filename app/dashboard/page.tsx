@@ -7,6 +7,7 @@ import ProfileHeader from "@/components/ProfileHeader";
 import CreatePost from "@/components/CreatePost";
 import PostsFeed from "@/components/PostsFeed";
 import InstagramFeed from "@/components/InstagramFeed";
+import IMDBFeed from "@/components/IMDBFeed";
 import type { User } from "@supabase/supabase-js";
 
 interface UserData {
@@ -23,6 +24,7 @@ interface Profile {
   location?: string;
   bio?: string;
   instagram_url?: string;
+  imdb_url?: string;
 }
 
 export default function DashboardPage() {
@@ -189,6 +191,11 @@ export default function DashboardPage() {
             {/* Instagram Feed */}
             {profile?.instagram_url && (
               <InstagramFeed instagramUrl={profile.instagram_url} />
+            )}
+
+            {/* IMDB Feed */}
+            {profile?.imdb_url && (
+              <IMDBFeed imdbUrl={profile.imdb_url} />
             )}
           </div>
 

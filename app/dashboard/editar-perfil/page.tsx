@@ -27,6 +27,7 @@ export default function EditProfilePage() {
     bio: "",
     location: "",
     instagramUrl: "",
+    imdbUrl: "",
   });
 
   const loadUserData = useCallback(async () => {
@@ -65,6 +66,7 @@ export default function EditProfilePage() {
         bio: talentProfile?.bio || "",
         location: talentProfile?.location || "",
         instagramUrl: talentProfile?.instagram_url || "",
+        imdbUrl: talentProfile?.imdb_url || "",
       });
     } else if (dbUser?.role === "productor") {
       const { data: producerProfile } = await supabase
@@ -79,6 +81,7 @@ export default function EditProfilePage() {
         bio: producerProfile?.bio || "",
         location: producerProfile?.location || "",
         instagramUrl: producerProfile?.instagram_url || "",
+        imdbUrl: producerProfile?.imdb_url || "",
       });
     }
 
@@ -112,6 +115,7 @@ export default function EditProfilePage() {
             bio: formData.bio,
             location: formData.location,
             instagram_url: formData.instagramUrl,
+            imdb_url: formData.imdbUrl,
           })
           .eq("user_id", user.id);
 
@@ -124,6 +128,7 @@ export default function EditProfilePage() {
             bio: formData.bio,
             location: formData.location,
             instagram_url: formData.instagramUrl,
+            imdb_url: formData.imdbUrl,
           })
           .eq("user_id", user.id);
 
@@ -246,7 +251,24 @@ export default function EditProfilePage() {
                 placeholder="https://instagram.com/tu_usuario"
               />
               <p className="text-xs text-text-muted mt-2">
-                💡 Si tu perfil es público, mostraremos una vista previa de tus fotos
+                📸 Tu portafolio de Instagram aparecerá en tu perfil
+              </p>
+            </div>
+
+            {/* IMDB URL */}
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                IMDB
+              </label>
+              <input
+                type="url"
+                value={formData.imdbUrl}
+                onChange={(e) => setFormData({ ...formData, imdbUrl: e.target.value })}
+                className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                placeholder="https://www.imdb.com/name/nmXXXXXXX/"
+              />
+              <p className="text-xs text-text-muted mt-2">
+                🎬 Tu perfil profesional de IMDB aparecerá en tu dashboard
               </p>
             </div>
 
