@@ -21,7 +21,8 @@ export default function ExplorarPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string>(""); // "", "talento", "productor"
+  const [roleFilter, setRoleFilter] = useState<string>(""); // "", "talento", "productor", "favorites"
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   const checkAuth = async () => {
     const supabase = createClient();
@@ -34,7 +35,21 @@ export default function ExplorarPage() {
       return;
     }
 
+    loadFavorites();
     searchUsers();
+  };
+
+  const loadFavorites = async () => {
+    try {
+      const response = await fetch("/api/favorites");
+      const data = await response.json();
+
+      if (data.favorites) {
+        setFavorites(data.favorites);
+      }
+    } catch (error) {
+      console.error("Error loading favorites:", error);
+    }
   };
 
   const searchUsers = async () => {
@@ -42,13 +57,18 @@ export default function ExplorarPage() {
     try {
       const params = new URLSearchParams();
       if (searchQuery) params.append("q", searchQuery);
-      if (roleFilter) params.append("role", roleFilter);
+      if (roleFilter && roleFilter !== "favorites") params.append("role", roleFilter);
 
       const response = await fetch(`/api/users/search?${params.toString()}`);
       const data = await response.json();
 
       if (data.users) {
-        setUsers(data.users);
+        // Si el filtro es "favorites", filtrar solo los favoritos
+        if (roleFilter === "favorites") {
+          setUsers(data.users.filter((u: User) => favorites.includes(u.id)));
+        } else {
+          setUsers(data.users);
+        }
       }
     } catch (error) {
       console.error("Error searching users:", error);
@@ -93,6 +113,36 @@ export default function ExplorarPage() {
     }
   };
 
+  const handleToggleFavorite = async (userId: string) => {
+    const isFavorite = favorites.includes(userId);
+
+    try {
+      if (isFavorite) {
+        // Quitar de favoritos
+        const response = await fetch(`/api/favorites?favoritedUserId=${userId}`, {
+          method: "DELETE",
+        });
+
+        if (response.ok) {
+          setFavorites(favorites.filter((id) => id !== userId));
+        }
+      } else {
+        // Agregar a favoritos
+        const response = await fetch("/api/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ favoritedUserId: userId }),
+        });
+
+        if (response.ok) {
+          setFavorites([...favorites, userId]);
+        }
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
@@ -133,14 +183,17 @@ export default function ExplorarPage() {
             />
             <button
               type="submit"
-              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
+              className="px-4 md:px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold flex items-center justify-center gap-2"
             >
-              Buscar
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <span className="hidden md:inline">Buscar</span>
             </button>
           </form>
 
           {/* Filters */}
-          <div className="flex gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-4">
             <button
               onClick={() => setRoleFilter("")}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
@@ -170,6 +223,19 @@ export default function ExplorarPage() {
               }`}
             >
               Productores
+            </button>
+            <button
+              onClick={() => setRoleFilter("favorites")}
+              className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+                roleFilter === "favorites"
+                  ? "bg-yellow-500 text-white"
+                  : "bg-surface hover:bg-border"
+              }`}
+            >
+              <svg className="w-4 h-4" fill={roleFilter === "favorites" ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+              Favoritos
             </button>
           </div>
         </div>
@@ -285,31 +351,64 @@ export default function ExplorarPage() {
                   </div>
                 )}
 
-                {/* Connect button */}
-                {user.connectionStatus === "none" && (
-                  <button
-                    onClick={() => handleConnect(user.id)}
-                    className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
-                  >
-                    Conectar
-                  </button>
-                )}
-                {user.connectionStatus === "pending" && (
-                  <button
-                    disabled
-                    className="w-full px-4 py-2 bg-surface text-text-muted rounded-lg cursor-not-allowed font-semibold"
-                  >
-                    Solicitud enviada
-                  </button>
-                )}
-                {user.connectionStatus === "accepted" && (
-                  <button
-                    disabled
-                    className="w-full px-4 py-2 bg-green-50 text-green-600 rounded-lg cursor-not-allowed font-semibold"
-                  >
-                    ✓ Conectado
-                  </button>
-                )}
+                {/* Action buttons */}
+                <div className="space-y-2">
+                  {/* Ver perfil button */}
+                  {user.role === "talento" && (
+                    <button
+                      onClick={() => router.push(`/talento/${user.id}`)}
+                      className="w-full px-4 py-2 bg-surface text-text border border-border rounded-lg hover:bg-border transition-all font-semibold flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      Ver Perfil
+                    </button>
+                  )}
+
+                  {/* Connect and favorite buttons */}
+                  <div className="flex gap-2">
+                    {user.connectionStatus === "none" && (
+                      <button
+                        onClick={() => handleConnect(user.id)}
+                        className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
+                      >
+                        Conectar
+                      </button>
+                    )}
+                    {user.connectionStatus === "pending" && (
+                      <button
+                        disabled
+                        className="flex-1 px-4 py-2 bg-surface text-text-muted rounded-lg cursor-not-allowed font-semibold"
+                      >
+                        Solicitud enviada
+                      </button>
+                    )}
+                    {user.connectionStatus === "accepted" && (
+                      <button
+                        disabled
+                        className="flex-1 px-4 py-2 bg-green-50 text-green-600 rounded-lg cursor-not-allowed font-semibold"
+                      >
+                        ✓ Conectado
+                      </button>
+                    )}
+
+                    {/* Favorite button */}
+                    <button
+                      onClick={() => handleToggleFavorite(user.id)}
+                      className={`px-4 py-2 rounded-lg transition-all ${
+                        favorites.includes(user.id)
+                          ? "bg-yellow-500 text-white"
+                          : "bg-surface text-text border border-border hover:bg-border"
+                      }`}
+                    >
+                      <svg className="w-5 h-5" fill={favorites.includes(user.id) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
