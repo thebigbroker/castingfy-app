@@ -107,14 +107,23 @@ export default function ProjectWizard({
     }
   };
 
-  const updateProjectData = (updates: Partial<ProjectData>) => {
-    setProjectData({
-      ...projectData,
-      ...updates,
-      meta: {
-        ...projectData.meta,
-        updatedAt: new Date().toISOString(),
-      },
+  const updateProjectData = (updates: Partial<ProjectData>, callback?: () => void) => {
+    setProjectData((prev) => {
+      const updated = {
+        ...prev,
+        ...updates,
+        meta: {
+          ...prev.meta,
+          updatedAt: new Date().toISOString(),
+        },
+      };
+
+      // Execute callback after state update
+      if (callback) {
+        setTimeout(callback, 0);
+      }
+
+      return updated;
     });
   };
 

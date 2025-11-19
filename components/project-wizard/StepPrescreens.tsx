@@ -5,7 +5,7 @@ import { ProjectData, PrescreenQuestion } from "./types";
 
 interface StepPrescreensProps {
   data: ProjectData;
-  onUpdate: (updates: Partial<ProjectData>) => void;
+  onUpdate: (updates: Partial<ProjectData>, callback?: () => void) => void;
   onSave: () => void;
   onFinish: () => void;
 }

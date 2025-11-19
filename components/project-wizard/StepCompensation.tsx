@@ -5,7 +5,7 @@ import { ProjectData, Role, CompensationData } from "./types";
 
 interface StepCompensationProps {
   data: ProjectData;
-  onUpdate: (updates: Partial<ProjectData>) => void;
+  onUpdate: (updates: Partial<ProjectData>, callback?: () => void) => void;
   onSave: () => void;
   onBack: () => void;
 }

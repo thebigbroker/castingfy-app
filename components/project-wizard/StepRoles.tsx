@@ -6,7 +6,7 @@ import { ProjectData, Role } from "./types";
 
 interface StepRolesProps {
   data: ProjectData;
-  onUpdate: (updates: Partial<ProjectData>) => void;
+  onUpdate: (updates: Partial<ProjectData>, callback?: () => void) => void;
   onSave: () => void;
 }
 
@@ -71,11 +71,12 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
       ? data.roles.map((r: Role) => (r.id === editingRole.id ? { ...role, id: editingRole.id } : r))
       : [...data.roles, { ...role, id: Date.now().toString() }];
 
-    onUpdate({ roles: updatedRoles });
     setShowForm(false);
     setSelectedCategory(null);
     setEditingRole(null);
-    onSave();
+
+    // Update with callback to save after state update
+    onUpdate({ roles: updatedRoles }, onSave);
   };
 
   const handleEditRole = (role: Role) => {
