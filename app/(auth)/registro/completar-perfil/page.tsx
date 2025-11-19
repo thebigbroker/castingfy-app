@@ -70,7 +70,6 @@ function CompletarPerfilForm() {
             const place = data.places[0];
             const location = `${place["place name"]}, ${data.country}`;
             talentForm.setValue("location", location);
-            producerForm.setValue("location", location);
           }
         }
       } catch (error) {
