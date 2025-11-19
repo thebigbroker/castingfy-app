@@ -34,6 +34,7 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const loadUserData = useCallback(async () => {
     const supabase = createClient();
@@ -109,14 +110,14 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header con navegación */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <h1 className="text-2xl font-bold tracking-tight text-black">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-black">
                 CASTINGFY
               </h1>
 
-              {/* Navegación */}
+              {/* Navegación Desktop */}
               <nav className="hidden md:flex items-center gap-1">
                 <button
                   onClick={() => router.push("/dashboard")}
@@ -145,13 +146,93 @@ export default function DashboardPage() {
               </nav>
             </div>
 
+            {/* Desktop Sign Out */}
             <button
               onClick={handleSignOut}
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
+              className="hidden md:block px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
             >
               Cerrar sesión
             </button>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
+              <nav className="flex flex-col gap-2">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    router.push("/dashboard");
+                  }}
+                  className="px-4 py-3 text-base font-medium text-black bg-gray-100 rounded-lg transition-colors text-left"
+                >
+                  Inicio
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    router.push("/explorar");
+                  }}
+                  className="px-4 py-3 text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-colors text-left"
+                >
+                  Explorar
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    router.push("/red");
+                  }}
+                  className="px-4 py-3 text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-colors text-left"
+                >
+                  Mi Red
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    router.push("/producciones");
+                  }}
+                  className="px-4 py-3 text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-colors text-left"
+                >
+                  Producciones
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    router.push("/dashboard/editar-perfil");
+                  }}
+                  className="px-4 py-3 text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-colors text-left"
+                >
+                  Editar Perfil
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleSignOut();
+                  }}
+                  className="px-4 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left"
+                >
+                  Cerrar sesión
+                </button>
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 
