@@ -8,6 +8,7 @@ interface StepRolesProps {
   data: ProjectData;
   onUpdate: (updates: Partial<ProjectData>, callback?: () => void) => void;
   onSave: () => void;
+  onNext?: () => void;
 }
 
 const ROLE_CATEGORIES = [
@@ -55,7 +56,7 @@ const ROLE_CATEGORIES = [
   },
 ];
 
-export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
+export default function StepRoles({ data, onUpdate, onSave, onNext }: StepRolesProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -75,8 +76,11 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
     setSelectedCategory(null);
     setEditingRole(null);
 
-    // Update with callback to save after state update
-    onUpdate({ roles: updatedRoles }, onSave);
+    // Update roles and trigger save after state update
+    onUpdate({ roles: updatedRoles }, () => {
+      // Save happens in callback after state is updated
+      onSave();
+    });
   };
 
   const handleEditRole = (role: Role) => {
@@ -193,6 +197,29 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
           <p className="text-sm text-blue-800">
             💡 Add at least one role to continue to Compensation and Pre-Screens
           </p>
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      {data.roles.length > 0 && (
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6 border-t border-gray-200">
+          <button
+            onClick={onSave}
+            className="px-6 py-3 bg-gray-50 border border-gray-200 text-text rounded-lg hover:bg-border transition-all font-semibold"
+          >
+            Save as Draft
+          </button>
+          {onNext && (
+            <button
+              onClick={() => {
+                onSave();
+                setTimeout(() => onNext(), 100);
+              }}
+              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
+            >
+              Save & Continue to Compensation
+            </button>
+          )}
         </div>
       )}
     </div>

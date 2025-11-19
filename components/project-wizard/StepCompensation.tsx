@@ -8,6 +8,7 @@ interface StepCompensationProps {
   onUpdate: (updates: Partial<ProjectData>, callback?: () => void) => void;
   onSave: () => void;
   onBack: () => void;
+  onNext?: () => void;
 }
 
 const RATE_TYPES = [
@@ -24,6 +25,7 @@ export default function StepCompensation({
   onUpdate,
   onSave,
   onBack,
+  onNext,
 }: StepCompensationProps) {
   const [compensationData, setCompensationData] = useState<
     Record<string, CompensationData>
@@ -67,10 +69,6 @@ export default function StepCompensation({
         byRole: updated,
       },
     });
-  };
-
-  const handleSaveAndContinue = () => {
-    onSave();
   };
 
   if (data.roles.length === 0) {
@@ -234,11 +232,22 @@ export default function StepCompensation({
           Back to Roles
         </button>
         <button
-          onClick={handleSaveAndContinue}
-          className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
+          onClick={onSave}
+          className="px-6 py-3 bg-gray-50 border border-gray-200 text-text rounded-lg hover:bg-border transition-all font-semibold"
         >
-          Save & Continue to Pre-Screens
+          Save as Draft
         </button>
+        {onNext && (
+          <button
+            onClick={() => {
+              onSave();
+              setTimeout(() => onNext(), 100);
+            }}
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
+          >
+            Save & Continue to Pre-Screens
+          </button>
+        )}
       </div>
     </div>
   );

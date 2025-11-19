@@ -275,6 +275,7 @@ export default function ProjectWizard({
               data={projectData}
               onUpdate={updateProjectData}
               onSave={() => handleSave(false)}
+              onNext={() => setCurrentStep(3)}
             />
           )}
           {currentStep === 3 && (
@@ -283,6 +284,7 @@ export default function ProjectWizard({
               onUpdate={updateProjectData}
               onSave={() => handleSave(false)}
               onBack={() => setCurrentStep(2)}
+              onNext={() => setCurrentStep(4)}
             />
           )}
           {currentStep === 4 && (
