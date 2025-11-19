@@ -106,50 +106,40 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-gray-50">
       {/* Header con navegación */}
-      <div className="bg-white border-b border-border sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🎬</span>
-                <h1 className="text-2xl font-bold">Castingfy</h1>
-              </div>
+            <div className="flex items-center gap-8">
+              <h1 className="text-2xl font-bold tracking-tight text-black">
+                CASTINGFY
+              </h1>
 
               {/* Navegación */}
-              <nav className="hidden md:flex items-center gap-2">
+              <nav className="hidden md:flex items-center gap-1">
                 <button
                   onClick={() => router.push("/dashboard")}
-                  className="px-4 py-2 text-sm font-medium text-text hover:bg-surface rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-black bg-gray-100 rounded-lg transition-colors"
                 >
                   Inicio
                 </button>
                 <button
                   onClick={() => router.push("/explorar")}
-                  className="px-4 py-2 text-sm font-medium text-text hover:bg-surface rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
                   Explorar
                 </button>
                 <button
                   onClick={() => router.push("/red")}
-                  className="px-4 py-2 text-sm font-medium text-text hover:bg-surface rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
                   Mi Red
                 </button>
                 <button
                   onClick={() => router.push("/producciones")}
-                  className="px-4 py-2 text-sm font-medium text-text hover:bg-surface rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                  </svg>
                   Producciones
                 </button>
               </nav>
@@ -157,13 +147,13 @@ export default function DashboardPage() {
 
             <button
               onClick={handleSignOut}
-              className="px-4 py-2 text-sm text-text-muted hover:text-text hover:bg-surface rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
             >
               Cerrar sesión
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Profile Header */}
       {userData && user && (
@@ -181,48 +171,48 @@ export default function DashboardPage() {
           {/* Columna izquierda - Info */}
           <div className="lg:col-span-1 space-y-6">
             {/* Sobre mí */}
-            <div className="bg-white border border-border rounded-lg p-6">
-              <h3 className="text-lg font-bold mb-4">Información</h3>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-black mb-4">Información</h3>
 
               <div className="space-y-3">
                 {user && (
                   <div className="flex items-center gap-3 text-sm">
-                    <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <span className="text-text-muted">{user.email}</span>
+                    <span className="text-gray-600">{user.email}</span>
                   </div>
                 )}
 
                 {profile?.location && (
                   <div className="flex items-center gap-3 text-sm">
-                    <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <span className="text-text-muted">{profile.location}</span>
+                    <span className="text-gray-600">{profile.location}</span>
                   </div>
                 )}
 
                 <div className="flex items-center gap-3 text-sm">
-                  <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <span className="text-text-muted capitalize">{userData?.role}</span>
+                  <span className="text-gray-600 capitalize">{userData?.role}</span>
                 </div>
               </div>
 
               {!profile && (
-                <div className="mt-6 p-4 bg-primary/5 rounded-lg">
-                  <p className="text-sm text-primary font-medium mb-2">
+                <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <p className="text-sm text-black font-medium mb-2">
                     Completa tu perfil
                   </p>
-                  <p className="text-xs text-text-muted mb-3">
+                  <p className="text-xs text-gray-600 mb-3">
                     Añade más información para destacar
                   </p>
                   <a
                     href="/registro/completar-perfil"
-                    className="block text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all text-sm font-semibold"
+                    className="block text-center px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition-all text-sm font-semibold"
                   >
                     Completar ahora
                   </a>

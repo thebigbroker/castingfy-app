@@ -115,18 +115,18 @@ export default function ProduccionesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-border sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push("/dashboard")}
-                className="p-2 hover:bg-surface rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-6 h-6 text-gray-700"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -139,12 +139,14 @@ export default function ProduccionesPage() {
                   />
                 </svg>
               </button>
-              <h1 className="text-2xl font-bold">Mis Producciones</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-black">
+                Mis Producciones
+              </h1>
             </div>
 
             <button
               onClick={() => setShowWizard(true)}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold flex items-center gap-2"
+              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition-all font-semibold flex items-center gap-2"
             >
               <svg
                 className="w-5 h-5"
@@ -163,7 +165,7 @@ export default function ProduccionesPage() {
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -172,18 +174,18 @@ export default function ProduccionesPage() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-border rounded-lg p-6 animate-pulse"
+                className="bg-white border border-gray-200 rounded-lg p-6 animate-pulse shadow-sm"
               >
-                <div className="h-6 bg-surface rounded w-3/4 mb-4" />
-                <div className="h-4 bg-surface rounded w-full mb-2" />
-                <div className="h-4 bg-surface rounded w-5/6" />
+                <div className="h-6 bg-gray-100 rounded w-3/4 mb-4" />
+                <div className="h-4 bg-gray-100 rounded w-full mb-2" />
+                <div className="h-4 bg-gray-100 rounded w-5/6" />
               </div>
             ))}
           </div>
         ) : projects.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="text-center py-16">
             <svg
-              className="w-16 h-16 text-text-muted mx-auto mb-4"
+              className="w-20 h-20 text-gray-300 mx-auto mb-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -195,15 +197,15 @@ export default function ProduccionesPage() {
                 d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
               />
             </svg>
-            <h3 className="text-lg font-semibold text-text-muted mb-2">
+            <h3 className="text-xl font-bold text-black mb-2">
               No tienes proyectos aún
             </h3>
-            <p className="text-sm text-text-muted mb-4">
+            <p className="text-gray-600 mb-6">
               Crea tu primer proyecto de casting
             </p>
             <button
               onClick={() => setShowWizard(true)}
-              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
+              className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-all font-semibold"
             >
               Crear Proyecto
             </button>
@@ -213,10 +215,10 @@ export default function ProduccionesPage() {
             {projects.map((project) => (
               <div
                 key={project.id}
-                className="bg-white border border-border rounded-lg p-6 hover:shadow-lg transition-all"
+                className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer"
               >
                 {/* Status badge */}
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
                       project.status
@@ -225,11 +227,14 @@ export default function ProduccionesPage() {
                     {getStatusLabel(project.status)}
                   </span>
                   <button
-                    onClick={() => handleDelete(project.id)}
-                    className="p-1 hover:bg-red-50 text-red-600 rounded transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(project.id);
+                    }}
+                    className="p-1.5 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
                   >
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -245,18 +250,20 @@ export default function ProduccionesPage() {
                 </div>
 
                 {/* Title */}
-                <h3 className="font-bold text-lg mb-2">{project.title}</h3>
+                <h3 className="font-bold text-lg text-black mb-2 leading-tight">
+                  {project.title}
+                </h3>
 
                 {/* Description */}
                 {project.description && (
-                  <p className="text-sm text-text-muted line-clamp-3 mb-3">
+                  <p className="text-sm text-gray-600 line-clamp-3 mb-4">
                     {project.description}
                   </p>
                 )}
 
                 {/* Project type */}
                 {project.project_type && (
-                  <div className="flex items-center gap-2 text-sm text-text-muted mb-2">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -276,7 +283,7 @@ export default function ProduccionesPage() {
 
                 {/* Location */}
                 {project.location && (
-                  <div className="flex items-center gap-2 text-sm text-text-muted mb-2">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -302,7 +309,7 @@ export default function ProduccionesPage() {
 
                 {/* Date */}
                 {project.start_date && (
-                  <div className="flex items-center gap-2 text-sm text-text-muted">
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
                     <svg
                       className="w-4 h-4"
                       fill="none"

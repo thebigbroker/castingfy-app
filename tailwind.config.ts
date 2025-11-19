@@ -10,18 +10,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Professional black/white/gray palette
         background: "#ffffff",
-        surface: "#f8f7f4",
+        surface: "#f9fafb", // gray-50
         primary: {
-          DEFAULT: "#1a1a1a",
-          light: "#4a4a4a",
+          DEFAULT: "#000000", // Pure black for CTAs
+          light: "#374151", // gray-700
         },
         text: {
-          DEFAULT: "#1a1a1a",
-          muted: "#666666",
+          DEFAULT: "#000000", // Black for headings
+          muted: "#6b7280", // gray-500
         },
-        border: "#e5e5e0",
-        accent: "#d4c5a9",
+        border: "#e5e7eb", // gray-200
+        accent: "#111827", // gray-900 for hover states
       },
       borderRadius: {
         lg: "12px",

@@ -10,15 +10,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Castingfy — Tu casting, sin fricción",
-  description: "Publica y descubre castings en minutos. La plataforma que conecta talento con oportunidades en España.",
-  keywords: ["castings", "actores", "modelos", "productoras", "españa", "talento"],
-  authors: [{ name: "Castingfy" }],
+  title: "CASTINGFY — Professional Casting Platform",
+  description: "Connect with thousands of professional actors, models, and talent. Streamline your casting process with CASTINGFY.",
+  keywords: ["casting", "actors", "models", "talent", "producers", "auditions", "professional casting"],
+  authors: [{ name: "CASTINGFY" }],
   openGraph: {
-    title: "Castingfy — Tu casting, sin fricción",
-    description: "Publica y descubre castings en minutos",
+    title: "CASTINGFY — Professional Casting Platform",
+    description: "Connect talent with opportunities. Professional casting made simple.",
     type: "website",
-    locale: "es_ES",
+    locale: "en_US",
   },
 };
 
