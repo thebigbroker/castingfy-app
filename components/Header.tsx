@@ -15,12 +15,14 @@ export default function Header() {
           href="/"
           style={{
             fontSize: '1.5rem',
-            fontWeight: '700',
+            fontWeight: '800',
             color: '#000000',
-            textDecoration: 'none'
+            textDecoration: 'none',
+            letterSpacing: '0.05em',
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
           }}
         >
-          Castingfy
+          CASTINGFY
         </Link>
       </div>
     </div>
