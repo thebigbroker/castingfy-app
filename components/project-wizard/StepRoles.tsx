@@ -102,7 +102,7 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
     return (
       <RoleForm
         category={selectedCategory}
-        initialData={editingRole}
+        initialData={editingRole || undefined}
         onSave={handleSaveRole}
         onCancel={handleCancelForm}
       />
