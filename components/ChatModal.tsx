@@ -38,6 +38,7 @@ export default function ChatModal({
       const interval = setInterval(loadMessages, 3000);
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, conversationId]);
 
   useEffect(() => {

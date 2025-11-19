@@ -23,14 +23,6 @@ export default function ExplorarPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>(""); // "", "talento", "productor"
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  useEffect(() => {
-    searchUsers();
-  }, [roleFilter]);
-
   const checkAuth = async () => {
     const supabase = createClient();
     const {
@@ -64,6 +56,16 @@ export default function ExplorarPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    searchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roleFilter]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

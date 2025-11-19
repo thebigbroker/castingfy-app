@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 // GET: Obtener todas las conversaciones del usuario
-export async function GET(request: NextRequest) {
+export async function GET() {
   const supabase = await createClient();
 
   const {

@@ -38,7 +38,6 @@ export async function GET(request: NextRequest) {
     // Para cada usuario, obtener su perfil
     const usersWithProfiles = await Promise.all(
       (users || []).map(async (foundUser) => {
-        let profile = null;
         let displayName = foundUser.email.split("@")[0];
         let avatarUrl = null;
         let bio = null;
@@ -52,7 +51,6 @@ export async function GET(request: NextRequest) {
             .single();
 
           if (talentProfile) {
-            profile = talentProfile;
             displayName = talentProfile.stage_name || displayName;
             avatarUrl = talentProfile.headshot_url;
             bio = talentProfile.bio;
@@ -66,7 +64,6 @@ export async function GET(request: NextRequest) {
             .single();
 
           if (producerProfile) {
-            profile = producerProfile;
             displayName = producerProfile.company_name || displayName;
             avatarUrl = producerProfile.headshot_url;
             bio = producerProfile.bio;
