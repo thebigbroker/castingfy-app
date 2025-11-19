@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
+import PublicProfileCTA from "@/components/PublicProfileCTA";
 
 interface TalentProfile {
   stage_name: string;
@@ -27,7 +28,6 @@ export default function TalentoPublicProfile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -322,32 +322,8 @@ export default function TalentoPublicProfile() {
         )}
       </div>
 
-      {/* Modal de autenticación */}
-      {showAuthModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-xl font-bold mb-3">Acceso Restringido</h3>
-            <p className="text-text-muted mb-6">
-              Para ver la información completa de este perfil, necesitas crear
-              una cuenta gratuita en Castingfy.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowAuthModal(false)}
-                className="flex-1 px-4 py-3 bg-surface text-text rounded-lg hover:bg-border transition-all font-semibold"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() => router.push("/registro")}
-                className="flex-1 px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
-              >
-                Registrarse
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* CTA Overlay for non-authenticated users */}
+      {!isAuthenticated && <PublicProfileCTA profileType="talent" />}
     </div>
   );
 }
