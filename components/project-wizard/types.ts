@@ -1,7 +1,7 @@
 // Shared types for Project Wizard components
 
 export interface Role {
-  id: string;
+  id?: string;
   category: string;
   subtype: string;
   name: string;

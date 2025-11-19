@@ -67,8 +67,8 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
   };
 
   const handleSaveRole = (role: Role) => {
-    const updatedRoles = editingRole
-      ? data.roles.map((r: Role) => (r.id === editingRole.id ? role : r))
+    const updatedRoles = editingRole && editingRole.id
+      ? data.roles.map((r: Role) => (r.id === editingRole.id ? { ...role, id: editingRole.id } : r))
       : [...data.roles, { ...role, id: Date.now().toString() }];
 
     onUpdate({ roles: updatedRoles });
@@ -130,7 +130,7 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
           </div>
 
           <div className="space-y-3">
-            {data.roles.map((role: Role) => (
+            {data.roles.filter((role): role is Role & { id: string } => !!role.id).map((role) => (
               <div
                 key={role.id}
                 className="flex items-center justify-between p-4 bg-surface rounded-lg hover:bg-border transition-colors"

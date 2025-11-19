@@ -33,7 +33,7 @@ export default function StepCompensation({
     // Initialize compensation for each role
     const initialData: Record<string, CompensationData> = {};
     data.roles.forEach((role: Role) => {
-      if (!compensationData[role.id]) {
+      if (role.id && !compensationData[role.id]) {
         initialData[role.id] = {
           rateType: "",
           amount: null,
@@ -125,7 +125,7 @@ export default function StepCompensation({
 
       {/* Compensation for each role */}
       <div className="space-y-6">
-        {data.roles.map((role: Role) => (
+        {data.roles.filter((role): role is Role & { id: string } => !!role.id).map((role) => (
           <section
             key={role.id}
             className="bg-white border border-border rounded-lg p-6"
