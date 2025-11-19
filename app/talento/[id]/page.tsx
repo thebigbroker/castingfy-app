@@ -77,12 +77,6 @@ export default function TalentoPublicProfile() {
     }
   };
 
-  const handleViewMore = () => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
