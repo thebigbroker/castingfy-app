@@ -13,16 +13,13 @@ export default function Header() {
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         <Link
           href="/"
+          className="castingfy-logo"
           style={{
             fontSize: '1.5rem',
-            fontWeight: '800',
-            color: '#000000',
-            textDecoration: 'none',
-            letterSpacing: '0.05em',
-            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+            textDecoration: 'none'
           }}
         >
-          CASTINGFY
+          Castingfy
         </Link>
       </div>
     </div>
