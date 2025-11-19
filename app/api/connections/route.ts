@@ -47,21 +47,35 @@ export async function GET(request: NextRequest) {
           .single();
 
         // Obtener su perfil
-        let otherProfile = null;
+        let displayName = otherUser?.email?.split("@")[0] || "";
+        let avatarUrl = null;
+        let bio = null;
+        let location = null;
+
         if (otherUser?.role === "talento") {
           const { data } = await supabase
             .from("talent_profiles")
             .select("stage_name, headshot_url, bio, location")
             .eq("user_id", otherUserId)
             .single();
-          otherProfile = data;
+          if (data) {
+            displayName = data.stage_name || displayName;
+            avatarUrl = data.headshot_url;
+            bio = data.bio;
+            location = data.location;
+          }
         } else if (otherUser?.role === "productor") {
           const { data } = await supabase
             .from("producer_profiles")
             .select("company_name, headshot_url, bio, location")
             .eq("user_id", otherUserId)
             .single();
-          otherProfile = data;
+          if (data) {
+            displayName = data.company_name || displayName;
+            avatarUrl = data.headshot_url;
+            bio = data.bio;
+            location = data.location;
+          }
         }
 
         return {
@@ -72,13 +86,10 @@ export async function GET(request: NextRequest) {
           isIncoming,
           otherUser: {
             ...otherUser,
-            displayName:
-              otherProfile?.stage_name ||
-              otherProfile?.company_name ||
-              otherUser?.email?.split("@")[0],
-            avatarUrl: otherProfile?.headshot_url,
-            bio: otherProfile?.bio,
-            location: otherProfile?.location,
+            displayName,
+            avatarUrl,
+            bio,
+            location,
           },
         };
       })
