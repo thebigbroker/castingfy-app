@@ -1,23 +1,60 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface InstagramFeedProps {
   instagramUrl: string | null;
 }
 
+interface InstagramPhoto {
+  id: string;
+  thumbnail: string;
+  url: string;
+}
+
 export default function InstagramFeed({ instagramUrl }: InstagramFeedProps) {
   const [username, setUsername] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<InstagramPhoto[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (instagramUrl) {
       // Extraer username de la URL de Instagram
       const match = instagramUrl.match(/instagram\.com\/([^\/\?]+)/);
       if (match) {
-        setUsername(match[1]);
+        const extractedUsername = match[1];
+        setUsername(extractedUsername);
+        fetchInstagramPhotos(extractedUsername);
+      } else {
+        setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
     }
   }, [instagramUrl]);
+
+  const fetchInstagramPhotos = async (user: string) => {
+    try {
+      setIsLoading(true);
+      setError(false);
+
+      const response = await fetch(`/api/instagram/feed?username=${user}`);
+      const data = await response.json();
+
+      if (data.success && data.photos.length > 0) {
+        setPhotos(data.photos);
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      console.error("Error fetching Instagram photos:", err);
+      setError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (!instagramUrl || !username) {
     return null;
@@ -42,19 +79,64 @@ export default function InstagramFeed({ instagramUrl }: InstagramFeedProps) {
         </a>
       </div>
 
-      {/* Previsualización usando Instagram embed */}
-      <div className="grid grid-cols-3 gap-2">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div
-            key={i}
-            className="aspect-square bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center"
-          >
-            <p className="text-xs text-text-muted text-center px-2">
-              Foto {i}
-            </p>
+      {/* Loading state */}
+      {isLoading && (
+        <div className="grid grid-cols-3 gap-2">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="aspect-square bg-surface rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Photos grid */}
+      {!isLoading && !error && photos.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {photos.map((photo) => (
+            <a
+              key={photo.id}
+              href={photo.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="aspect-square bg-surface rounded-lg overflow-hidden hover:opacity-80 transition-opacity relative"
+            >
+              <Image
+                src={photo.thumbnail}
+                alt="Instagram photo"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </a>
+          ))}
+        </div>
+      )}
+
+      {/* Error/Fallback state - placeholders */}
+      {!isLoading && (error || photos.length === 0) && (
+        <div>
+          <div className="grid grid-cols-3 gap-2">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="aspect-square bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center"
+              >
+                <p className="text-xs text-text-muted text-center px-2">
+                  Foto {i}
+                </p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <p className="mt-3 text-xs text-text-muted text-center">
+            {error
+              ? "⚠️ No se pudieron cargar las fotos. El perfil debe ser público."
+              : "💡 Las fotos se mostrarán automáticamente si el perfil es público"
+            }
+          </p>
+        </div>
+      )}
 
       <a
         href={instagramUrl}
@@ -64,10 +146,6 @@ export default function InstagramFeed({ instagramUrl }: InstagramFeedProps) {
       >
         Ver perfil completo en Instagram →
       </a>
-
-      <p className="mt-2 text-xs text-text-muted text-center">
-        💡 Las fotos se mostrarán automáticamente si el perfil es público
-      </p>
     </div>
   );
 }
