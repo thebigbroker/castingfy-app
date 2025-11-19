@@ -10,7 +10,6 @@ interface ProducerProfile {
   company_name: string;
   bio: string | null;
   location: string | null;
-  cover_image_url: string | null;
   instagram_url: string | null;
   imdb_url: string | null;
 }
@@ -49,7 +48,7 @@ export default function ProductorPublicProfile() {
     try {
       const supabase = createClient();
 
-      // Get user data
+      // Obtener datos del usuario
       const { data: user } = await supabase
         .from("users")
         .select("id, email, role")
@@ -60,7 +59,7 @@ export default function ProductorPublicProfile() {
         setUserData(user);
 
         if (user.role === "productor") {
-          // Get producer profile
+          // Obtener perfil de productor
           const { data: producerProfile } = await supabase
             .from("producer_profiles")
             .select("*")
@@ -79,10 +78,10 @@ export default function ProductorPublicProfile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando perfil...</p>
+          <p className="text-text-muted">Cargando perfil...</p>
         </div>
       </div>
     );
@@ -90,28 +89,15 @@ export default function ProductorPublicProfile() {
 
   if (!profile || !userData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <svg
-            className="w-16 h-16 text-gray-300 mx-auto mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <h2 className="text-xl font-bold mb-2">Perfil no encontrado</h2>
-          <p className="text-gray-600 mb-6">
-            Este perfil no existe o no está disponible públicamente
+          <h2 className="text-2xl font-bold mb-2">Perfil no encontrado</h2>
+          <p className="text-text-muted mb-4">
+            Este perfil no existe o no estÃ¡ disponible
           </p>
           <button
             onClick={() => router.push("/")}
-            className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-all font-semibold"
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
           >
             Volver al inicio
           </button>
@@ -120,28 +106,26 @@ export default function ProductorPublicProfile() {
     );
   }
 
-  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.company_name)}&size=200&background=6dcff6&color=fff`;
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-surface">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white border-b border-border">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-2xl"><¬</span>
+            <span className="text-2xl">ðŸŽ¬</span>
             <h1 className="text-xl font-bold">Castingfy</h1>
           </div>
           {!isAuthenticated && (
             <div className="flex gap-3">
               <button
                 onClick={() => router.push("/login")}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-text hover:bg-surface rounded-lg transition-colors"
               >
-                Iniciar sesión
+                Iniciar sesiÃ³n
               </button>
               <button
                 onClick={() => router.push("/registro")}
-                className="px-4 py-2 text-sm font-medium bg-black text-white rounded-lg hover:bg-gray-900 transition-colors"
+                className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 Registrarse
               </button>
@@ -150,7 +134,7 @@ export default function ProductorPublicProfile() {
           {isAuthenticated && (
             <button
               onClick={() => router.push("/dashboard")}
-              className="px-4 py-2 text-sm font-medium bg-black text-white rounded-lg hover:bg-gray-900 transition-colors"
+              className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
             >
               Ir al Dashboard
             </button>
@@ -158,79 +142,100 @@ export default function ProductorPublicProfile() {
         </div>
       </div>
 
-      {/* Cover Image */}
-      <div className="bg-gradient-to-r from-black/10 to-gray-300/20 h-48 sm:h-64 relative overflow-hidden">
-        {profile.cover_image_url ? (
-          <Image
-            src={profile.cover_image_url}
-            alt="Cover"
-            fill
-            className="object-cover"
-            unoptimized
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-gray-300/20" />
-        )}
-      </div>
-
       {/* Profile Content */}
-      <div className="max-w-5xl mx-auto px-6 -mt-20 relative pb-16">
-        {/* Company Header */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-40 h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white relative mb-4">
-            <Image
-              src={avatarUrl}
-              alt={profile.company_name}
-              fill
-              className="object-cover"
-              unoptimized
-            />
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        {/* Header del Perfil */}
+        <div className="bg-white border border-border rounded-lg overflow-hidden mb-6">
+          <div className="h-32 bg-gradient-to-r from-primary to-purple-600"></div>
+          <div className="px-8 pb-6">
+            <div className="flex flex-col md:flex-row gap-6 -mt-16">
+              {/* Avatar */}
+              <div className="w-32 h-32 rounded-full overflow-hidden bg-white border-4 border-white shadow-lg flex-shrink-0">
+                <div className="w-full h-full flex items-center justify-center text-primary font-bold text-4xl bg-primary/10">
+                  {profile.company_name.charAt(0).toUpperCase()}
+                </div>
+              </div>
+
+              {/* Info bÃ¡sica */}
+              <div className="flex-1 mt-16 md:mt-4">
+                <h1 className="text-3xl font-bold mb-2">
+                  {profile.company_name}
+                </h1>
+                <p className="text-text-muted capitalize mb-3">
+                  {userData.role}
+                </p>
+
+                {profile.location && (
+                  <div className="flex items-center gap-2 text-sm text-text-muted">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    {profile.location}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-
-          <h1 className="text-3xl font-bold mb-2">{profile.company_name}</h1>
-          <p className="text-gray-600 mb-4">
-            Productor
-            {profile.location && ` · ${profile.location}`}
-          </p>
-
-          {profile.bio && (
-            <p className="text-gray-700 max-w-2xl">{profile.bio}</p>
-          )}
         </div>
 
-        {/* Social Links */}
-        {(profile.instagram_url || profile.imdb_url) && (
-          <div className="flex justify-center gap-2 mb-8">
-            {profile.instagram_url && (
-              <a
-                href={profile.instagram_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-all text-sm font-medium"
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z" />
-                </svg>
-                <span className="hidden sm:inline">Instagram</span>
-              </a>
-            )}
-            {profile.imdb_url && (
-              <a
-                href={profile.imdb_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 bg-yellow-500 text-black rounded-lg hover:opacity-90 transition-all text-sm font-medium"
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M13.5 14.5h1v-5h-1v5zM22 7.5v9c0 .55-.45 1-1 1H3c-.55 0-1-.45-1-1v-9c0-.55.45-1 1-1h18c.55 0 1 .45 1 1zm-11 5.83l.83-2.5.83 2.5h-1.66zm3.21-5.83h-1.71v5h1.71v-5zm-4 5h1.5l-.5-1.5h-.5v1.5zm.79-5h-1.85l-1.15 3.5v-3.5h-1.84v5h1.84v-1.5h.68l.47 1.5h1.85l-1-3.08.96-.42z" />
-                </svg>
-                <span className="hidden sm:inline">IMDb</span>
-              </a>
-            )}
+        {/* Bio */}
+        {profile.bio && (
+          <div className="bg-white border border-border rounded-lg p-6 mb-6">
+            <h2 className="text-lg font-bold mb-3">Sobre mÃ­</h2>
+            <p className="text-text-muted whitespace-pre-line">{profile.bio}</p>
           </div>
         )}
 
-        {/* Limited Content Notice - Only for non-authenticated */}
+        {/* Enlaces sociales */}
+        {(profile.instagram_url || profile.imdb_url) && (
+          <div className="bg-white border border-border rounded-lg p-6 mb-6">
+            <h2 className="text-lg font-bold mb-3">Enlaces</h2>
+            <div className="flex flex-wrap gap-3">
+              {profile.instagram_url && (
+                <a
+                  href={profile.instagram_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-all"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+                  </svg>
+                  Instagram
+                </a>
+              )}
+              {profile.imdb_url && (
+                <a
+                  href={profile.imdb_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 transition-all font-semibold"
+                >
+                  <span className="text-lg">â˜…</span>
+                  IMDb
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Gate para ver mÃ¡s informaciÃ³n */}
         {!isAuthenticated && (
           <div className="bg-gradient-to-r from-primary/10 to-purple-600/10 border border-primary/20 rounded-lg p-8 text-center">
             <svg
@@ -247,18 +252,18 @@ export default function ProductorPublicProfile() {
               />
             </svg>
             <h3 className="text-2xl font-bold mb-2">
-              ¿Quieres ver los proyectos de este productor?
+              Â¿Quieres ver mÃ¡s informaciÃ³n?
             </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Regístrate en Castingfy para acceder a proyectos activos,
-              castings abiertos y contacto directo.
+            <p className="text-text-muted mb-6 max-w-md mx-auto">
+              RegÃ­strate en Castingfy para acceder a informaciÃ³n completa del
+              portafolio, experiencia, contacto directo y mucho mÃ¡s.
             </p>
             <div className="flex gap-3 justify-center">
               <button
                 onClick={() => router.push("/login")}
                 className="px-6 py-3 bg-white text-primary border-2 border-primary rounded-lg hover:bg-primary/5 transition-all font-semibold"
               >
-                Iniciar sesión
+                Iniciar sesiÃ³n
               </button>
               <button
                 onClick={() => router.push("/registro")}
@@ -270,14 +275,14 @@ export default function ProductorPublicProfile() {
           </div>
         )}
 
-        {/* Full Information for authenticated users */}
+        {/* InformaciÃ³n completa para usuarios autenticados */}
         {isAuthenticated && (
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h2 className="text-lg font-bold mb-3">Información de Contacto</h2>
+          <div className="bg-white border border-border rounded-lg p-6">
+            <h2 className="text-lg font-bold mb-3">InformaciÃ³n de Contacto</h2>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm">
                 <svg
-                  className="w-4 h-4 text-gray-600"
+                  className="w-4 h-4 text-text-muted"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -289,11 +294,11 @@ export default function ProductorPublicProfile() {
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                <span className="text-gray-600">{userData.email}</span>
+                <span className="text-text-muted">{userData.email}</span>
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-4">
-              =¡ Conecta con este productor desde la página de{" "}
+            <p className="text-xs text-text-muted mt-4">
+              ðŸ’¡ Conecta con este productor desde la pÃ¡gina de{" "}
               <button
                 onClick={() => router.push("/explorar")}
                 className="text-primary underline"
