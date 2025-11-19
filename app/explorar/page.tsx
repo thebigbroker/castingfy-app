@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
+import FiltersPanel, { FilterOptions } from "@/components/FiltersPanel";
 
 interface User {
   id: string;
@@ -23,6 +24,12 @@ export default function ExplorarPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>(""); // "", "talento", "productor", "favorites"
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [showFiltersPanel, setShowFiltersPanel] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState<FilterOptions>({
+    gender: "",
+    skills: [],
+    location: "",
+  });
 
   const checkAuth = async () => {
     const supabase = createClient();
@@ -59,6 +66,15 @@ export default function ExplorarPage() {
       if (searchQuery) params.append("q", searchQuery);
       if (roleFilter && roleFilter !== "favorites") params.append("role", roleFilter);
 
+      // Add advanced filters only for talents
+      if (roleFilter === "talento") {
+        if (advancedFilters.gender) params.append("gender", advancedFilters.gender);
+        if (advancedFilters.skills.length > 0) {
+          params.append("skills", advancedFilters.skills.join(","));
+        }
+        if (advancedFilters.location) params.append("location", advancedFilters.location);
+      }
+
       const response = await fetch(`/api/users/search?${params.toString()}`);
       const data = await response.json();
 
@@ -85,7 +101,7 @@ export default function ExplorarPage() {
   useEffect(() => {
     searchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roleFilter]);
+  }, [roleFilter, advancedFilters]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,6 +158,37 @@ export default function ExplorarPage() {
       console.error("Error toggling favorite:", error);
     }
   };
+
+  const handleApplyFilters = (filters: FilterOptions) => {
+    setAdvancedFilters(filters);
+  };
+
+  const handleRemoveFilter = (filterType: "gender" | "skill" | "location", value?: string) => {
+    if (filterType === "gender") {
+      setAdvancedFilters({ ...advancedFilters, gender: "" });
+    } else if (filterType === "location") {
+      setAdvancedFilters({ ...advancedFilters, location: "" });
+    } else if (filterType === "skill" && value) {
+      setAdvancedFilters({
+        ...advancedFilters,
+        skills: advancedFilters.skills.filter((s) => s !== value),
+      });
+    }
+  };
+
+  const handleClearAllFilters = () => {
+    setAdvancedFilters({ gender: "", skills: [], location: "" });
+  };
+
+  const getActiveFiltersCount = () => {
+    let count = 0;
+    if (advancedFilters.gender) count++;
+    if (advancedFilters.skills.length > 0) count += advancedFilters.skills.length;
+    if (advancedFilters.location) count++;
+    return count;
+  };
+
+  const hasActiveFilters = getActiveFiltersCount() > 0;
 
   return (
     <div className="min-h-screen bg-surface">
@@ -237,7 +284,84 @@ export default function ExplorarPage() {
               </svg>
               Favoritos
             </button>
+
+            {/* Advanced Filters Button - Only for talents */}
+            {roleFilter === "talento" && (
+              <button
+                onClick={() => setShowFiltersPanel(true)}
+                className="px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 bg-surface hover:bg-border border-2 border-gray-300 relative"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                Filtros
+                {hasActiveFilters && (
+                  <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {getActiveFiltersCount()}
+                  </span>
+                )}
+              </button>
+            )}
           </div>
+
+          {/* Active Filters Chips */}
+          {hasActiveFilters && roleFilter === "talento" && (
+            <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
+              <span className="text-sm font-medium text-gray-600">Filtros activos:</span>
+
+              {advancedFilters.gender && (
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-white rounded-full text-sm">
+                  Género: {advancedFilters.gender}
+                  <button
+                    onClick={() => handleRemoveFilter("gender")}
+                    className="hover:bg-white/20 rounded-full p-0.5"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+
+              {advancedFilters.location && (
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-white rounded-full text-sm">
+                  Ubicación: {advancedFilters.location}
+                  <button
+                    onClick={() => handleRemoveFilter("location")}
+                    className="hover:bg-white/20 rounded-full p-0.5"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+
+              {advancedFilters.skills.map((skill) => (
+                <div
+                  key={skill}
+                  className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-white rounded-full text-sm"
+                >
+                  {skill}
+                  <button
+                    onClick={() => handleRemoveFilter("skill", skill)}
+                    className="hover:bg-white/20 rounded-full p-0.5"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+
+              <button
+                onClick={handleClearAllFilters}
+                className="text-sm text-gray-600 hover:text-gray-900 underline"
+              >
+                Limpiar todos
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -414,6 +538,14 @@ export default function ExplorarPage() {
           </div>
         )}
       </div>
+
+      {/* Filters Panel */}
+      <FiltersPanel
+        isOpen={showFiltersPanel}
+        onClose={() => setShowFiltersPanel(false)}
+        onApply={handleApplyFilters}
+        initialFilters={advancedFilters}
+      />
     </div>
   );
 }

@@ -17,6 +17,12 @@ export async function GET(request: NextRequest) {
   const role = searchParams.get("role"); // talento, productor, null (todos)
   const limit = parseInt(searchParams.get("limit") || "20");
 
+  // Advanced filters (only for talents)
+  const gender = searchParams.get("gender") || "";
+  const skillsParam = searchParams.get("skills") || "";
+  const skills = skillsParam ? skillsParam.split(",").filter(Boolean) : [];
+  const locationFilter = searchParams.get("location") || "";
+
   try {
     // Buscar usuarios (excluyendo al usuario actual)
     let usersQuery = supabase
@@ -46,7 +52,7 @@ export async function GET(request: NextRequest) {
         if (foundUser.role === "talento") {
           const { data: talentProfile } = await supabase
             .from("talent_profiles")
-            .select("stage_name, headshot_url, bio, location")
+            .select("stage_name, headshot_url, bio, location, gender, skills, age")
             .eq("user_id", foundUser.id)
             .single();
 
@@ -55,6 +61,33 @@ export async function GET(request: NextRequest) {
             avatarUrl = talentProfile.headshot_url;
             bio = talentProfile.bio;
             location = talentProfile.location;
+
+            // Apply advanced filters for talents
+            // Gender filter
+            if (gender && talentProfile.gender !== gender) {
+              return null;
+            }
+
+            // Skills filter (AND logic - must have ALL selected skills)
+            if (skills.length > 0) {
+              const profileSkills = talentProfile.skills || [];
+              const hasAllSkills = skills.every((skill) =>
+                profileSkills.includes(skill)
+              );
+              if (!hasAllSkills) {
+                return null;
+              }
+            }
+
+            // Location filter (partial match, case-insensitive)
+            if (
+              locationFilter &&
+              !talentProfile.location
+                ?.toLowerCase()
+                .includes(locationFilter.toLowerCase())
+            ) {
+              return null;
+            }
           }
         } else if (foundUser.role === "productor") {
           const { data: producerProfile } = await supabase

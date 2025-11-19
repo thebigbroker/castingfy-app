@@ -30,6 +30,7 @@ export default function EditProfilePage() {
     instagramUrl: "",
     imdbUrl: "",
     headshotUrl: "",
+    coverImageUrl: "",
   });
 
   const loadUserData = useCallback(async () => {
@@ -70,6 +71,7 @@ export default function EditProfilePage() {
         instagramUrl: talentProfile?.instagram_url || "",
         imdbUrl: talentProfile?.imdb_url || "",
         headshotUrl: talentProfile?.headshot_url || "",
+        coverImageUrl: talentProfile?.cover_image_url || "",
       });
     } else if (dbUser?.role === "productor") {
       const { data: producerProfile } = await supabase
@@ -86,6 +88,7 @@ export default function EditProfilePage() {
         instagramUrl: producerProfile?.instagram_url || "",
         imdbUrl: producerProfile?.imdb_url || "",
         headshotUrl: "",
+        coverImageUrl: producerProfile?.cover_image_url || "",
       });
     }
 
@@ -121,6 +124,7 @@ export default function EditProfilePage() {
             instagram_url: formData.instagramUrl,
             imdb_url: formData.imdbUrl,
             headshot_url: formData.headshotUrl,
+            cover_image_url: formData.coverImageUrl,
           })
           .eq("user_id", user.id);
 
@@ -134,6 +138,7 @@ export default function EditProfilePage() {
             location: formData.location,
             instagram_url: formData.instagramUrl,
             imdb_url: formData.imdbUrl,
+            cover_image_url: formData.coverImageUrl,
           })
           .eq("user_id", user.id);
 
@@ -186,6 +191,31 @@ export default function EditProfilePage() {
       <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="bg-white border border-border rounded-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Cover Image */}
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                Imagen de portada
+              </label>
+              {formData.coverImageUrl && (
+                <div className="mb-4">
+                  <img
+                    src={formData.coverImageUrl}
+                    alt="Portada actual"
+                    className="w-full h-48 rounded-lg object-cover border-2 border-border"
+                  />
+                </div>
+              )}
+              <UploadcareUploader
+                onFileUpload={(url) => setFormData({ ...formData, coverImageUrl: url })}
+                accept="image/*"
+                imgOnly={true}
+                value={formData.coverImageUrl}
+              />
+              <p className="text-xs text-text-muted mt-2">
+                🖼️ Imagen de portada para tu perfil. Recomendado: 1920x480px, paisaje horizontal.
+              </p>
+            </div>
+
             {/* Headshot for talent */}
             {userData?.role === "talento" && (
               <div>
