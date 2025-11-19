@@ -102,10 +102,10 @@ export default function StepPrescreens({
 
   if (data.roles.length === 0) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Pre-Screens & Auditions</h1>
-          <p className="text-text-muted">
+          <h1 className="text-2xl sm:text-3xl font-bold text-black mb-2">Pre-Screens & Auditions</h1>
+          <p className="text-gray-600">
             Set up pre-screening questions and audition requirements
           </p>
         </div>
@@ -125,7 +125,7 @@ export default function StepPrescreens({
             />
           </svg>
           <h3 className="text-xl font-semibold mb-2">No roles created yet</h3>
-          <p className="text-text-muted mb-6">
+          <p className="text-gray-600 mb-6">
             Please fill out the Project Details and Roles first in order to
             continue.
           </p>
@@ -135,20 +135,20 @@ export default function StepPrescreens({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Pre-Screens & Auditions</h1>
-        <p className="text-text-muted">
+        <h1 className="text-2xl sm:text-3xl font-bold text-black mb-2">Pre-Screens & Auditions</h1>
+        <p className="text-gray-600">
           Add screening questions and audition requirements for your project
         </p>
       </div>
 
       {/* Pre-Screen Questions */}
-      <section className="bg-white border border-border rounded-lg p-6">
+      <section className="bg-white border border-gray-200 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-6">Pre-Screen Questions</h2>
 
-        <p className="text-sm text-text-muted mb-6">
+        <p className="text-sm text-gray-600 mb-6">
           Ask specific questions to filter candidates before reviewing their full
           submissions.
         </p>
@@ -159,11 +159,11 @@ export default function StepPrescreens({
             {questions.map((q) => (
               <div
                 key={q.id}
-                className="flex items-center justify-between p-4 bg-surface rounded-lg"
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
               >
                 <div className="flex-1">
                   <p className="font-medium">{q.question}</p>
-                  <p className="text-sm text-text-muted capitalize">
+                  <p className="text-sm text-gray-600 capitalize">
                     Type: {q.type.replace("_", " ")}
                   </p>
                 </div>
@@ -179,7 +179,7 @@ export default function StepPrescreens({
         )}
 
         {/* Add New Question */}
-        <div className="space-y-4 p-4 bg-surface rounded-lg">
+        <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
           <div>
             <label className="block text-sm font-medium mb-2">
               Question
@@ -190,7 +190,7 @@ export default function StepPrescreens({
               onChange={(e) =>
                 setNewQuestion({ ...newQuestion, question: e.target.value })
               }
-              className="w-full px-4 py-3 bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="e.g., Do you have experience with stage combat?"
             />
           </div>
@@ -205,7 +205,7 @@ export default function StepPrescreens({
                 onChange={(e) =>
                   setNewQuestion({ ...newQuestion, type: e.target.value })
                 }
-                className="w-full px-4 py-3 bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {QUESTION_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -228,10 +228,10 @@ export default function StepPrescreens({
       </section>
 
       {/* Media Requirements */}
-      <section className="bg-white border border-border rounded-lg p-6">
+      <section className="bg-white border border-gray-200 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-6">Media Requirements</h2>
 
-        <p className="text-sm text-text-muted mb-6">
+        <p className="text-sm text-gray-600 mb-6">
           Select what materials you need from candidates when they submit.
         </p>
 
@@ -239,7 +239,7 @@ export default function StepPrescreens({
           {MEDIA_REQUIREMENTS.map((media) => (
             <label
               key={media}
-              className="flex items-center gap-3 p-4 border border-border rounded-lg cursor-pointer hover:bg-surface transition-colors"
+              className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
             >
               <input
                 type="checkbox"
@@ -254,10 +254,10 @@ export default function StepPrescreens({
       </section>
 
       {/* Audition Instructions */}
-      <section className="bg-white border border-border rounded-lg p-6">
+      <section className="bg-white border border-gray-200 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-6">Audition Instructions</h2>
 
-        <p className="text-sm text-text-muted mb-4">
+        <p className="text-sm text-gray-600 mb-4">
           Provide detailed instructions for how candidates should prepare and
           submit their auditions.
         </p>
@@ -266,7 +266,7 @@ export default function StepPrescreens({
           value={auditionInstructions}
           onChange={(e) => handleInstructionsChange(e.target.value)}
           rows={8}
-          className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
           placeholder="Example:&#10;&#10;Please prepare a 1-2 minute self-tape performing the sides provided. &#10;&#10;Requirements:&#10;- Good lighting and clear audio&#10;- Neutral background&#10;- Introduce yourself at the start&#10;- Submit in MP4 format"
         />
       </section>
@@ -294,10 +294,10 @@ export default function StepPrescreens({
       </section>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 pt-6 border-t border-border">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6 border-t border-gray-200">
         <button
           onClick={onSave}
-          className="px-6 py-3 bg-surface border border-border text-text rounded-lg hover:bg-border transition-all font-semibold"
+          className="px-6 py-3 bg-gray-50 border border-gray-200 text-text rounded-lg hover:bg-border transition-all font-semibold"
         >
           Save as Draft
         </button>

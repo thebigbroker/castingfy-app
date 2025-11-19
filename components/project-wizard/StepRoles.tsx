@@ -111,21 +111,21 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Add a Role</h1>
-        <p className="text-text-muted">
+        <h1 className="text-2xl sm:text-3xl font-bold text-black mb-2">Add a Role</h1>
+        <p className="text-gray-600">
           Select the type of talent you&apos;re looking for
         </p>
       </div>
 
       {/* Existing Roles */}
       {data.roles.length > 0 && (
-        <section className="bg-white border border-border rounded-lg p-6">
+        <section className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">Current Roles</h2>
-            <span className="text-sm text-text-muted">
+            <span className="text-sm text-gray-600">
               {data.roles.length} role{data.roles.length !== 1 ? "s" : ""}
             </span>
           </div>
@@ -134,11 +134,11 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
             {data.roles.filter((role): role is Role & { id: string } => !!role.id).map((role) => (
               <div
                 key={role.id}
-                className="flex items-center justify-between p-4 bg-surface rounded-lg hover:bg-border transition-colors"
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-border transition-colors"
               >
                 <div className="flex-1">
                   <h3 className="font-semibold">{role.name}</h3>
-                  <div className="flex gap-4 mt-1 text-sm text-text-muted">
+                  <div className="flex gap-4 mt-1 text-sm text-gray-600">
                     <span className="capitalize">{role.category.replace("_", " ")}</span>
                     <span>
                       Age: {role.ageMin}-{role.ageMax}
@@ -149,13 +149,13 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEditRole(role)}
-                    className="px-3 py-2 text-sm bg-white border border-border rounded-lg hover:bg-surface transition-colors"
+                    className="px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDeleteRole(role.id)}
-                    className="px-3 py-2 text-sm text-red-600 bg-white border border-border rounded-lg hover:bg-red-50 transition-colors"
+                    className="px-3 py-2 text-sm text-red-600 bg-white border border-gray-200 rounded-lg hover:bg-red-50 transition-colors"
                   >
                     Delete
                   </button>
@@ -175,13 +175,13 @@ export default function StepRoles({ data, onUpdate, onSave }: StepRolesProps) {
             <button
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
-              className="p-6 bg-white border-2 border-border rounded-lg hover:border-primary hover:shadow-md transition-all text-left group"
+              className="p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-primary hover:shadow-md transition-all text-left group"
             >
               <div className="text-4xl mb-3">{category.icon}</div>
               <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
                 {category.title}
               </h3>
-              <p className="text-sm text-text-muted">{category.subtitle}</p>
+              <p className="text-sm text-gray-600">{category.subtitle}</p>
             </button>
           ))}
         </div>

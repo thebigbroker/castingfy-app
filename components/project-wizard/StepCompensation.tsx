@@ -75,10 +75,10 @@ export default function StepCompensation({
 
   if (data.roles.length === 0) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Compensation</h1>
-          <p className="text-text-muted">
+          <h1 className="text-2xl sm:text-3xl font-bold text-black mb-2">Compensation</h1>
+          <p className="text-gray-600">
             Set payment details for each role in your project
           </p>
         </div>
@@ -98,7 +98,7 @@ export default function StepCompensation({
             />
           </svg>
           <h3 className="text-xl font-semibold mb-2">No roles created yet</h3>
-          <p className="text-text-muted mb-6">
+          <p className="text-gray-600 mb-6">
             Please fill out the Project Details and Roles first in order to
             continue.
           </p>
@@ -114,11 +114,11 @@ export default function StepCompensation({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Compensation</h1>
-        <p className="text-text-muted">
+        <h1 className="text-2xl sm:text-3xl font-bold text-black mb-2">Compensation</h1>
+        <p className="text-gray-600">
           Define payment details for each role in your project
         </p>
       </div>
@@ -128,11 +128,11 @@ export default function StepCompensation({
         {data.roles.filter((role): role is Role & { id: string } => !!role.id).map((role) => (
           <section
             key={role.id}
-            className="bg-white border border-border rounded-lg p-6"
+            className="bg-white border border-gray-200 rounded-lg p-6"
           >
             <h3 className="text-lg font-semibold mb-6">
               {role.name}
-              <span className="ml-2 text-sm font-normal text-text-muted capitalize">
+              <span className="ml-2 text-sm font-normal text-gray-600 capitalize">
                 ({role.category.replace("_", " ")})
               </span>
             </h3>
@@ -148,7 +148,7 @@ export default function StepCompensation({
                   onChange={(e) =>
                     handleCompensationChange(role.id, "rateType", e.target.value)
                   }
-                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">Select payment type</option>
                   {RATE_TYPES.map((type) => (
@@ -177,7 +177,7 @@ export default function StepCompensation({
                         parseFloat(e.target.value)
                       )
                     }
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="0.00"
                   />
                 </div>
@@ -194,7 +194,7 @@ export default function StepCompensation({
                         e.target.value
                       )
                     }
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     {CURRENCIES.map((currency) => (
                       <option key={currency} value={currency}>
@@ -216,7 +216,7 @@ export default function StepCompensation({
                     handleCompensationChange(role.id, "notes", e.target.value)
                   }
                   rows={3}
-                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                   placeholder="Add any additional payment details or conditions..."
                 />
               </div>
@@ -226,10 +226,10 @@ export default function StepCompensation({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 pt-6 border-t border-border">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6 border-t border-gray-200">
         <button
           onClick={onBack}
-          className="px-6 py-3 bg-surface border border-border text-text rounded-lg hover:bg-border transition-all font-semibold"
+          className="px-6 py-3 bg-gray-50 border border-gray-200 text-text rounded-lg hover:bg-border transition-all font-semibold"
         >
           Back to Roles
         </button>
