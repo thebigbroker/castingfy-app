@@ -39,7 +39,16 @@ export async function GET(request: NextRequest) {
     const edges =
       data?.graphql?.user?.edge_owner_to_timeline_media?.edges || [];
 
-    const photos = edges.slice(0, 6).map((edge: any) => ({
+    interface InstagramEdge {
+      node: {
+        id: string;
+        thumbnail_src?: string;
+        display_url: string;
+        shortcode: string;
+      };
+    }
+
+    const photos = edges.slice(0, 6).map((edge: InstagramEdge) => ({
       id: edge.node.id,
       thumbnail: edge.node.thumbnail_src || edge.node.display_url,
       url: `https://www.instagram.com/p/${edge.node.shortcode}/`,
