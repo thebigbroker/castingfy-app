@@ -2,35 +2,7 @@
 
 import { useState } from "react";
 import RoleForm from "./RoleForm";
-
-interface Role {
-  id: string;
-  category: string;
-  subtype: string;
-  name: string;
-  description: string;
-  ageMin: number;
-  ageMax: number;
-  isRemote: boolean;
-  requirements: {
-    gender: string[];
-    ethnicity: string[];
-    skills: string[];
-    media: string[];
-    accent: string[];
-    language: string[];
-    voiceStyle: string[];
-    softwareSkills: string[];
-  };
-  flags: {
-    nudity: boolean;
-    explicitContent: boolean;
-  };
-}
-
-interface ProjectData {
-  roles: Role[];
-}
+import { ProjectData, Role } from "./types";
 
 interface StepRolesProps {
   data: ProjectData;

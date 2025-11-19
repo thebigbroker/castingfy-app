@@ -1,21 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-interface ProjectData {
-  title: string;
-  type: string;
-  description: string;
-  unionStatus: string;
-  datesAndLocations: string;
-  hireFrom: string;
-  hasSpecialInstructions: boolean;
-  specialInstructions: string;
-  materials: {
-    media: string[];
-    texts: string[];
-  };
-}
+import { ProjectData } from "./types";
 
 interface ProjectDetailsProps {
   data: ProjectData;

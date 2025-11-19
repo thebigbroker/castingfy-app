@@ -1,27 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-interface PrescreenQuestion {
-  id: string;
-  question: string;
-  type: string;
-}
-
-interface Role {
-  id: string;
-  name: string;
-}
-
-interface ProjectData {
-  title: string;
-  roles: Role[];
-  prescreens?: {
-    questions: PrescreenQuestion[];
-    mediaRequirements: string[];
-    auditionInstructions: string;
-  };
-}
+import { ProjectData, PrescreenQuestion } from "./types";
 
 interface StepPrescreensProps {
   data: ProjectData;

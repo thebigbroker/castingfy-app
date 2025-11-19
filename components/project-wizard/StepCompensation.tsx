@@ -1,26 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-interface CompensationData {
-  rateType: string;
-  amount: number | null;
-  currency: string;
-  notes: string;
-}
-
-interface Role {
-  id: string;
-  name: string;
-  category: string;
-}
-
-interface ProjectData {
-  roles: Role[];
-  compensation?: {
-    byRole: Record<string, CompensationData>;
-  };
-}
+import { ProjectData, Role, CompensationData } from "./types";
 
 interface StepCompensationProps {
   data: ProjectData;
