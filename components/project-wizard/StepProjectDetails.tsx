@@ -49,17 +49,17 @@ export default function StepProjectDetails({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Tell us about your project…</h1>
-        <p className="text-text-muted">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-black">Tell us about your project…</h1>
+        <p className="text-gray-600 text-sm sm:text-base">
           Provide the essential details about your production
         </p>
       </div>
 
       {/* Basic Information */}
-      <section className="bg-white border border-border rounded-lg p-6">
+      <section className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
         <h2 className="text-xl font-semibold mb-6">Basic Information</h2>
 
         <div className="space-y-6">
@@ -342,17 +342,17 @@ export default function StepProjectDetails({
       </section>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 pt-6 border-t border-border">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6 border-t border-gray-200">
         <button
           onClick={onSave}
-          className="px-6 py-3 bg-surface border border-border text-text rounded-lg hover:bg-border transition-all font-semibold"
+          className="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-black rounded-lg hover:bg-gray-50 transition-all font-semibold order-2 sm:order-1"
         >
           Save Details
         </button>
         <button
           onClick={onSaveAndContinue}
           disabled={!data.title || !data.type}
-          className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed order-1 sm:order-2"
         >
           Save & Continue to Roles
         </button>

@@ -136,23 +136,72 @@ export default function ProjectWizard({
   };
 
   return (
-    <div className="fixed inset-0 bg-white z-50 overflow-hidden flex">
-      {/* Sidebar */}
-      <div className="w-80 bg-surface border-r border-border flex flex-col">
+    <div className="fixed inset-0 bg-white z-50 overflow-hidden flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-black">CASTINGFY</h2>
+          <p className="text-sm text-gray-600">
+            Step {currentStep} of {STEPS.length}
+          </p>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          aria-label="Close"
+        >
+          <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile Progress Bar */}
+      <div className="md:hidden bg-gray-50 px-4 py-3 overflow-x-auto">
+        <div className="flex gap-2 min-w-max">
+          {STEPS.map((step) => {
+            const isActive = currentStep === step.id;
+            const isCompleted = currentStep > step.id;
+            const canAccess = canProceedToStep(step.id);
+
+            return (
+              <button
+                key={step.id}
+                onClick={() => canAccess && setCurrentStep(step.id)}
+                disabled={!canAccess}
+                className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+                  isActive
+                    ? "bg-black text-white"
+                    : isCompleted
+                    ? "bg-green-100 text-green-700"
+                    : canAccess
+                    ? "bg-gray-200 text-gray-700"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                {isCompleted ? "✓" : step.id}. {step.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex md:w-80 bg-gray-50 border-r border-gray-200 flex-col">
         {/* Company Details */}
-        <div className="p-6 border-b border-border">
-          <h3 className="text-sm font-semibold text-text-muted mb-2">
+        <div className="p-6 border-b border-gray-200">
+          <h3 className="text-sm font-semibold text-gray-500 mb-2">
             COMPANY DETAILS
           </h3>
           <div className="space-y-2">
-            <p className="font-medium">Mi Compañía</p>
-            <p className="text-sm text-text-muted">Privacy Settings</p>
-            <button className="text-sm text-primary hover:underline">
+            <p className="font-medium text-black">Mi Compañía</p>
+            <p className="text-sm text-gray-600">Privacy Settings</p>
+            <button className="text-sm text-black hover:underline">
               Edit
             </button>
           </div>
           {lastSaved && (
-            <p className="text-xs text-text-muted mt-4">
+            <p className="text-xs text-gray-500 mt-4">
               Last saved on {lastSaved.toLocaleString()}
             </p>
           )}
@@ -173,21 +222,21 @@ export default function ProjectWizard({
                   disabled={!canAccess}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
                     isActive
-                      ? "bg-primary text-white"
+                      ? "bg-black text-white"
                       : isCompleted
                       ? "bg-green-50 text-green-700 hover:bg-green-100"
                       : canAccess
-                      ? "hover:bg-border"
+                      ? "hover:bg-gray-200"
                       : "opacity-50 cursor-not-allowed"
                   }`}
                 >
                   <span
                     className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                       isActive
-                        ? "bg-white text-primary"
+                        ? "bg-white text-black"
                         : isCompleted
                         ? "bg-green-600 text-white"
-                        : "bg-border text-text-muted"
+                        : "bg-gray-200 text-gray-600"
                     }`}
                   >
                     {isCompleted ? "✓" : step.id}
@@ -200,10 +249,10 @@ export default function ProjectWizard({
         </nav>
 
         {/* Close Button */}
-        <div className="p-6 border-t border-border">
+        <div className="p-6 border-t border-gray-200">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2 bg-surface text-text border border-border rounded-lg hover:bg-border transition-all"
+            className="w-full px-4 py-2 bg-white text-black border border-gray-300 rounded-lg hover:bg-gray-100 transition-all"
           >
             Save & Exit
           </button>
@@ -212,7 +261,7 @@ export default function ProjectWizard({
 
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-8">
+        <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
           {currentStep === 1 && (
             <StepProjectDetails
               data={projectData}
