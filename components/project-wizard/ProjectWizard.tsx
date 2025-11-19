@@ -89,7 +89,12 @@ export default function ProjectWizard({
 
       const data = await response.json();
       if (data.project) {
-        setProjectData({ ...projectData, id: data.project.id });
+        // Merge server response with current state to preserve all data
+        setProjectData((prev) => ({
+          ...prev,
+          ...data.project,
+          id: data.project.id,
+        }));
         setLastSaved(new Date());
         onSave(data.project);
 
