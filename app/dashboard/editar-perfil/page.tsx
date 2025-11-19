@@ -85,6 +85,7 @@ export default function EditProfilePage() {
         location: producerProfile?.location || "",
         instagramUrl: producerProfile?.instagram_url || "",
         imdbUrl: producerProfile?.imdb_url || "",
+        headshotUrl: "",
       });
     }
 
