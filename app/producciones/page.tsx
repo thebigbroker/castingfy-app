@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import ProjectWizard from "@/components/project-wizard/ProjectWizard";
 
 interface Project {
   id: string;
@@ -21,16 +22,10 @@ export default function ProduccionesPage() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    projectType: "",
-    budgetRange: "",
-    startDate: "",
-    endDate: "",
-    location: "",
-  });
+  const [showWizard, setShowWizard] = useState(false);
+  const [editingProjectId, setEditingProjectId] = useState<string | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     checkAuth();
@@ -67,32 +62,16 @@ export default function ProduccionesPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleWizardClose = () => {
+    setShowWizard(false);
+    setEditingProjectId(undefined);
+    loadProjects();
+  };
 
-    try {
-      const response = await fetch("/api/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setShowModal(false);
-        setFormData({
-          title: "",
-          description: "",
-          projectType: "",
-          budgetRange: "",
-          startDate: "",
-          endDate: "",
-          location: "",
-        });
-        loadProjects();
-      }
-    } catch (error) {
-      console.error("Error creating project:", error);
-    }
+  const handleWizardSave = () => {
+    // Projects are saved automatically by the wizard
+    // This callback is just for any additional UI updates
+    loadProjects();
   };
 
   const handleDelete = async (projectId: string) => {
@@ -164,7 +143,7 @@ export default function ProduccionesPage() {
             </div>
 
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => setShowWizard(true)}
               className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold flex items-center gap-2"
             >
               <svg
@@ -223,7 +202,7 @@ export default function ProduccionesPage() {
               Crea tu primer proyecto de casting
             </p>
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => setShowWizard(true)}
               className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
             >
               Crear Proyecto
@@ -346,172 +325,13 @@ export default function ProduccionesPage() {
         )}
       </div>
 
-      {/* Modal de Nuevo Proyecto */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">Nuevo Proyecto</h2>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="p-2 hover:bg-surface rounded-lg transition-colors"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Título */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Título del Proyecto *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) =>
-                      setFormData({ ...formData, title: e.target.value })
-                    }
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    required
-                  />
-                </div>
-
-                {/* Descripción */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Descripción
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                    rows={4}
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-
-                {/* Tipo de Proyecto */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Tipo de Proyecto
-                  </label>
-                  <select
-                    value={formData.projectType}
-                    onChange={(e) =>
-                      setFormData({ ...formData, projectType: e.target.value })
-                    }
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="">Seleccionar tipo</option>
-                    <option value="film">Película</option>
-                    <option value="series">Serie</option>
-                    <option value="commercial">Comercial</option>
-                    <option value="theater">Teatro</option>
-                    <option value="music_video">Video Musical</option>
-                    <option value="other">Otro</option>
-                  </select>
-                </div>
-
-                {/* Presupuesto */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Rango de Presupuesto
-                  </label>
-                  <select
-                    value={formData.budgetRange}
-                    onChange={(e) =>
-                      setFormData({ ...formData, budgetRange: e.target.value })
-                    }
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="">Seleccionar rango</option>
-                    <option value="low">Bajo (&lt; $10k)</option>
-                    <option value="medium">Medio ($10k - $100k)</option>
-                    <option value="high">Alto (&gt; $100k)</option>
-                  </select>
-                </div>
-
-                {/* Fechas */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Fecha de Inicio
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.startDate}
-                      onChange={(e) =>
-                        setFormData({ ...formData, startDate: e.target.value })
-                      }
-                      className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Fecha de Fin
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.endDate}
-                      onChange={(e) =>
-                        setFormData({ ...formData, endDate: e.target.value })
-                      }
-                      className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                </div>
-
-                {/* Ubicación */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Ubicación
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.location}
-                    onChange={(e) =>
-                      setFormData({ ...formData, location: e.target.value })
-                    }
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Ciudad, País"
-                  />
-                </div>
-
-                {/* Botones */}
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                    className="flex-1 px-6 py-3 bg-surface text-text rounded-lg hover:bg-border transition-all font-semibold"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold"
-                  >
-                    Crear Proyecto
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      {/* Project Wizard */}
+      {showWizard && (
+        <ProjectWizard
+          projectId={editingProjectId}
+          onClose={handleWizardClose}
+          onSave={handleWizardSave}
+        />
       )}
     </div>
   );

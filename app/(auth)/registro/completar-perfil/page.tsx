@@ -115,7 +115,7 @@ function CompletarPerfilForm() {
       return;
     }
 
-    const { error: profileError } = await supabase.from("talent_profiles").insert({
+    const { error: profileError } = await supabase.from("talent_profiles").upsert({
       user_id: user.id,
       stage_name: data.stageName,
       location: data.location,
@@ -127,6 +127,8 @@ function CompletarPerfilForm() {
       reel_url: data.reelUrl || null,
       languages: data.languages || null,
       skills: data.skills || null,
+    }, {
+      onConflict: 'user_id'
     });
 
     if (profileError) {
@@ -154,12 +156,14 @@ function CompletarPerfilForm() {
       return;
     }
 
-    const { error: profileError } = await supabase.from("producer_profiles").insert({
+    const { error: profileError } = await supabase.from("producer_profiles").upsert({
       user_id: user.id,
       company_name: data.companyName,
       project_types: data.projectTypes,
       website: data.website,
       credits: data.credits,
+    }, {
+      onConflict: 'user_id'
     });
 
     if (profileError) {
