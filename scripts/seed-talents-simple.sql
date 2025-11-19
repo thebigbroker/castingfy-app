@@ -52,7 +52,6 @@ BEGIN
       role,
       aud,
       confirmation_token,
-      email_confirmed_at,
       recovery_token,
       last_sign_in_at
     ) VALUES (
@@ -66,7 +65,6 @@ BEGIN
       'authenticated',
       'authenticated',
       '',
-      NOW(),
       '',
       NOW()
     );
