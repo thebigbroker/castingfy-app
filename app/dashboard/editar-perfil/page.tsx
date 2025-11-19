@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import UploadcareUploader from "@/components/UploadcareUploader";
 
 interface UserData {
   id: string;
@@ -28,6 +29,7 @@ export default function EditProfilePage() {
     location: "",
     instagramUrl: "",
     imdbUrl: "",
+    headshotUrl: "",
   });
 
   const loadUserData = useCallback(async () => {
@@ -67,6 +69,7 @@ export default function EditProfilePage() {
         location: talentProfile?.location || "",
         instagramUrl: talentProfile?.instagram_url || "",
         imdbUrl: talentProfile?.imdb_url || "",
+        headshotUrl: talentProfile?.headshot_url || "",
       });
     } else if (dbUser?.role === "productor") {
       const { data: producerProfile } = await supabase
@@ -116,6 +119,7 @@ export default function EditProfilePage() {
             location: formData.location,
             instagram_url: formData.instagramUrl,
             imdb_url: formData.imdbUrl,
+            headshot_url: formData.headshotUrl,
           })
           .eq("user_id", user.id);
 
@@ -181,6 +185,33 @@ export default function EditProfilePage() {
       <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="bg-white border border-border rounded-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Headshot for talent */}
+            {userData?.role === "talento" && (
+              <div>
+                <label className="block text-sm font-semibold mb-2">
+                  Foto de perfil (Headshot)
+                </label>
+                {formData.headshotUrl && (
+                  <div className="mb-4">
+                    <img
+                      src={formData.headshotUrl}
+                      alt="Headshot actual"
+                      className="w-32 h-32 rounded-full object-cover border-4 border-border"
+                    />
+                  </div>
+                )}
+                <UploadcareUploader
+                  onFileUpload={(url) => setFormData({ ...formData, headshotUrl: url })}
+                  accept="image/*"
+                  imgOnly={true}
+                  value={formData.headshotUrl}
+                />
+                <p className="text-xs text-text-muted mt-2">
+                  📸 Tu foto de perfil profesional. Recomendado: foto de rostro clara y bien iluminada.
+                </p>
+              </div>
+            )}
+
             {/* Name field based on role */}
             {userData?.role === "talento" ? (
               <div>
