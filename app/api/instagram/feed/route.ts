@@ -82,9 +82,6 @@ export async function GET(request: NextRequest) {
       throw new Error("Could not extract Instagram data");
     }
 
-    const jsonData = JSON.parse(scriptMatch[1]);
-    console.log(`[Instagram Feed] Extracted JSON-LD data`);
-
     // El JSON-LD no siempre tiene las fotos, así que devolvemos placeholder
     console.log("[Instagram Feed] Instagram has blocked API access");
 
