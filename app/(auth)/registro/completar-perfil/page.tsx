@@ -97,6 +97,7 @@ function CompletarPerfilForm() {
       companyName: "",
       projectTypes: [],
       website: "",
+      instagram: "",
       credits: "",
     },
   });
@@ -162,6 +163,7 @@ function CompletarPerfilForm() {
       company_name: data.companyName,
       project_types: data.projectTypes || null,
       website: data.website || null,
+      instagram: data.instagram || null,
       credits: data.credits || null,
     }, {
       onConflict: 'user_id'
@@ -496,22 +498,42 @@ function CompletarPerfilForm() {
                 )}
               </div>
 
-              <div>
-                <label htmlFor="website" className="block text-sm font-medium mb-2">
-                  Website (opcional)
-                </label>
-                <input
-                  {...producerForm.register("website")}
-                  type="url"
-                  id="website"
-                  className="w-full px-4 py-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                  placeholder="https://tuproducciones.com"
-                />
-                {producerForm.formState.errors.website && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {producerForm.formState.errors.website.message}
-                  </p>
-                )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="website" className="block text-sm font-medium mb-2">
+                    Website (opcional)
+                  </label>
+                  <input
+                    {...producerForm.register("website")}
+                    type="text"
+                    id="website"
+                    className="w-full px-4 py-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    placeholder="https://tuproducciones.com"
+                  />
+                  {producerForm.formState.errors.website && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {producerForm.formState.errors.website.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="instagram" className="block text-sm font-medium mb-2">
+                    Instagram (opcional)
+                  </label>
+                  <input
+                    {...producerForm.register("instagram")}
+                    type="text"
+                    id="instagram"
+                    className="w-full px-4 py-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    placeholder="@tuproducciones o tuproducciones"
+                  />
+                  {producerForm.formState.errors.instagram && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {producerForm.formState.errors.instagram.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <button

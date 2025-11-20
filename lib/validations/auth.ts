@@ -35,7 +35,20 @@ export const talentProfileSchema = z.object({
 export const producerProfileSchema = z.object({
   companyName: z.string().min(2, "El nombre de la empresa es requerido"),
   projectTypes: z.array(z.string()).optional(),
-  website: z.string().url("URL inválida").optional().or(z.literal("")),
+  website: z.string().optional().refine((val) => {
+    if (!val || val === "") return true;
+    try {
+      new URL(val);
+      return true;
+    } catch {
+      return false;
+    }
+  }, { message: "URL inválida. Debe incluir http:// o https://" }),
+  instagram: z.string().optional().refine((val) => {
+    if (!val || val === "") return true;
+    // Acepta @username, username, o URL completa de Instagram
+    return /^@?[\w.]+$/.test(val) || val.startsWith("https://instagram.com/") || val.startsWith("https://www.instagram.com/");
+  }, { message: "Usuario de Instagram inválido" }),
   credits: z.string().max(1000, "Los créditos no pueden tener más de 1000 caracteres").optional(),
 });
 
