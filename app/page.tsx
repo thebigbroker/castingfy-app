@@ -147,24 +147,34 @@ function HomeContent() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-black to-gray-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+      <section
+        className="relative text-white py-32 md:py-40 overflow-hidden"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1592685530141-64eb6bdbf1c6?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Overlay oscuro para mejor legibilidad */}
+        <div className="absolute inset-0 bg-black/60"></div>
+
+        <div className="relative max-w-7xl mx-auto px-6 text-center z-10">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg">
             Encuentra el talento perfecto para tu próximo proyecto
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto drop-shadow-md">
             Conecta con actores, modelos, voiceovers y creadores de contenido profesionales
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/registro"
-              className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg"
+              className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg shadow-lg"
             >
               Comenzar gratis
             </Link>
             <Link
               href="/castings-new"
-              className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors text-lg"
+              className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors text-lg backdrop-blur-sm"
             >
               Ver castings activos
             </Link>
