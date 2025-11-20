@@ -222,22 +222,8 @@ export async function GET() {
     }
 
     // Transform the data to match the expected format
-    interface ProjectData {
-      id: string;
-      title: string;
-      description: string;
-      project_type: string;
-      location: string;
-      created_at: string;
-      status: string;
-      roles: unknown;
-      compensation: unknown;
-      producer_profiles?: {
-        company_name: string;
-      };
-    }
-
-    const castings = projects.map((project: ProjectData) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const castings = projects.map((project: any) => ({
       id: project.id,
       title: project.title,
       description: project.description,
