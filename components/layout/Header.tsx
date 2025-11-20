@@ -1,15 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 interface HeaderProps {
   variant?: "light" | "dark";
 }
 
 export default function Header({ variant = "light" }: HeaderProps) {
-  const router = useRouter();
-
   const isDark = variant === "dark";
 
   return (
