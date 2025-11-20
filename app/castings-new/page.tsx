@@ -8,8 +8,8 @@ import ProductionCard, { Production } from "@/components/castings/ProductionCard
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-// Mock data - replace with real data from your API
-const MOCK_PRODUCTIONS: Production[] = [
+// Mock data moved to API endpoint - /api/public/castings-active
+/* const MOCK_PRODUCTIONS: Production[] = [
   {
     id: "1",
     title: "TikTok Promotional Video, GRWM Style UGC",
@@ -161,9 +161,9 @@ const MOCK_PRODUCTIONS: Production[] = [
       },
     ],
   },
-];
+]; */
 
-const STAFF_PICKS: Production[] = [
+/* const STAFF_PICKS: Production[] = [
   {
     id: "sp-1",
     title: "'The Last Dance' - Musical Theater",
@@ -194,7 +194,7 @@ const STAFF_PICKS: Production[] = [
     description: "Seeking professional on-camera talent for product demonstration videos. Must be tech-savvy and articulate.",
     roles: [],
   },
-];
+]; */
 
 export default function CastingsPage() {
   const router = useRouter();
@@ -230,7 +230,29 @@ export default function CastingsPage() {
 
       if (data.castings && data.castings.length > 0) {
         // Transform API data to Production format
-        const transformedProductions = data.castings.map((casting: any) => {
+        interface CastingRole {
+          id?: string;
+          name: string;
+          category?: string;
+          gender?: string;
+          ageRange?: string;
+        }
+
+        interface CastingData {
+          id: string;
+          title: string;
+          description: string;
+          project_type: string;
+          location: string;
+          created_at: string;
+          roles?: CastingRole[];
+          compensation?: {
+            amount?: string;
+            details?: string;
+          };
+        }
+
+        const transformedProductions = data.castings.map((casting: CastingData) => {
           const firstRole = casting.roles && casting.roles.length > 0 ? casting.roles[0] : null;
 
           return {
@@ -246,7 +268,7 @@ export default function CastingsPage() {
             ageRange: firstRole?.ageRange || "Todas las edades",
             union: "No sindicado",
             description: casting.description,
-            roles: (casting.roles || []).map((role: any) => ({
+            roles: (casting.roles || []).map((role: CastingRole) => ({
               id: role.id || Math.random().toString(),
               name: role.name,
               category: role.category || "Actores",
