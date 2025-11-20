@@ -95,6 +95,7 @@ function CompletarPerfilForm() {
     resolver: zodResolver(producerProfileSchema),
     defaultValues: {
       companyName: "",
+      projectTypes: [],
       website: "",
       credits: "",
     },
@@ -159,9 +160,9 @@ function CompletarPerfilForm() {
     const { error: profileError } = await supabase.from("producer_profiles").upsert({
       user_id: user.id,
       company_name: data.companyName,
-      project_types: data.projectTypes,
-      website: data.website,
-      credits: data.credits,
+      project_types: data.projectTypes || null,
+      website: data.website || null,
+      credits: data.credits || null,
     }, {
       onConflict: 'user_id'
     });
