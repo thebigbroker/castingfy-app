@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import FiltersPanel, { FilterOptions } from "@/components/FiltersPanel";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 interface User {
   id: string;
@@ -191,33 +193,15 @@ export default function ExplorarPage() {
   const hasActiveFilters = getActiveFiltersCount() > 0;
 
   return (
-    <div className="min-h-screen bg-surface">
-      {/* Header */}
-      <div className="bg-white border-b border-border sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => router.push("/dashboard")}
-                className="p-2 hover:bg-surface rounded-lg transition-colors"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                  />
-                </svg>
-              </button>
+    <>
+      <Header variant="light" />
+      <div className="min-h-screen bg-surface">
+        {/* Search and Filters Section */}
+        <div className="bg-white border-b border-border sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="mb-4">
               <h1 className="text-2xl font-bold">Explorar Talentos</h1>
             </div>
-          </div>
 
           {/* Search bar */}
           <form onSubmit={handleSearch} className="flex gap-3">
@@ -362,11 +346,11 @@ export default function ExplorarPage() {
               </button>
             </div>
           )}
+          </div>
         </div>
-      </div>
 
-      {/* Results */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Results */}
+        <div className="max-w-7xl mx-auto px-6 py-8">
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -537,15 +521,17 @@ export default function ExplorarPage() {
             ))}
           </div>
         )}
-      </div>
+        </div>
 
-      {/* Filters Panel */}
-      <FiltersPanel
-        isOpen={showFiltersPanel}
-        onClose={() => setShowFiltersPanel(false)}
-        onApply={handleApplyFilters}
-        initialFilters={advancedFilters}
-      />
-    </div>
+        {/* Filters Panel */}
+        <FiltersPanel
+          isOpen={showFiltersPanel}
+          onClose={() => setShowFiltersPanel(false)}
+          onApply={handleApplyFilters}
+          initialFilters={advancedFilters}
+        />
+      </div>
+      <Footer />
+    </>
   );
 }

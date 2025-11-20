@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Suspense } from "react";
 import Image from "next/image";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 interface TalentProfile {
   id: string;
@@ -145,7 +147,9 @@ function HomeContent() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <>
+      <Header variant="light" />
+      <main className="min-h-screen bg-white">
       {/* Hero Section */}
       <section
         className="relative text-white py-32 md:py-40 overflow-hidden"
@@ -228,7 +232,7 @@ function HomeContent() {
 
           {/* Talent Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {filteredTalents.map((talent) => (
+            {filteredTalents.map((talent, index) => (
               <div
                 key={talent.id}
                 className="relative group"
@@ -239,7 +243,9 @@ function HomeContent() {
                       src={talent.headshot_url}
                       alt={talent.stage_name}
                       fill
-                      className="object-cover blur-md group-hover:blur-lg transition-all duration-300"
+                      className={`object-cover transition-all duration-300 ${
+                        index < 2 ? "" : "blur-md group-hover:blur-lg"
+                      }`}
                       unoptimized
                     />
                   )}
@@ -248,11 +254,11 @@ function HomeContent() {
 
                   {/* Info visible */}
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <p className="text-white font-semibold text-lg blur-sm">
+                    <p className={`text-white font-semibold text-lg ${index < 2 ? "" : "blur-sm"}`}>
                       {talent.stage_name}
                     </p>
                     {talent.location && (
-                      <p className="text-white/80 text-sm blur-sm">
+                      <p className={`text-white/80 text-sm ${index < 2 ? "" : "blur-sm"}`}>
                         {talent.location}
                       </p>
                     )}
@@ -390,6 +396,8 @@ function HomeContent() {
         </div>
       </section>
     </main>
+    <Footer />
+  </>
   );
 }
 

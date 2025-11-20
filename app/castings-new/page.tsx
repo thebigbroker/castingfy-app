@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import JobFilters, { FilterValues } from "@/components/castings/JobFilters";
 import ProductionCard, { Production } from "@/components/castings/ProductionCard";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 // Mock data - replace with real data from your API
 const MOCK_PRODUCTIONS: Production[] = [
@@ -296,24 +298,8 @@ export default function CastingsPage() {
   const totalProductions = filteredProductions.length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button onClick={() => router.push("/dashboard")} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <span className="text-2xl">🎬</span>
-              <h1 className="text-xl font-bold">Castingfy</h1>
-            </button>
-          </div>
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            Volver al Dashboard
-          </button>
-        </div>
-      </header>
+    <>
+      <Header variant="light" />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
@@ -425,6 +411,7 @@ export default function CastingsPage() {
           </div>
         </section>
       </main>
-    </div>
+      <Footer />
+    </>
   );
 }
