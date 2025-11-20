@@ -207,12 +207,14 @@ export default function CastingsPage() {
     age: "any",
   });
 
-  const [productions] = useState<Production[]>(MOCK_PRODUCTIONS);
-  const [filteredProductions, setFilteredProductions] = useState<Production[]>(MOCK_PRODUCTIONS);
-  const [staffPicks] = useState<Production[]>(STAFF_PICKS);
+  const [productions, setProductions] = useState<Production[]>([]);
+  const [filteredProductions, setFilteredProductions] = useState<Production[]>([]);
+  const [staffPicks, setStaffPicks] = useState<Production[]>([]);
+  const [isMockData, setIsMockData] = useState(false);
 
   useEffect(() => {
     checkAuth();
+    loadCastings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -220,6 +222,67 @@ export default function CastingsPage() {
     applyFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, productions]);
+
+  const loadCastings = async () => {
+    try {
+      const response = await fetch("/api/public/castings-active");
+      const data = await response.json();
+
+      if (data.castings && data.castings.length > 0) {
+        // Transform API data to Production format
+        const transformedProductions = data.castings.map((casting: any) => {
+          const firstRole = casting.roles && casting.roles.length > 0 ? casting.roles[0] : null;
+
+          return {
+            id: casting.id,
+            title: casting.title,
+            category: casting.project_type || "Proyecto",
+            mainRole: firstRole ? firstRole.name : "Varios roles",
+            roleType: firstRole ? `${firstRole.gender}, ${firstRole.ageRange}` : "Ver detalles",
+            pay: casting.compensation?.amount || casting.compensation?.details || "A negociar",
+            estimatedHours: "Ver detalles",
+            location: casting.location || "No especificado",
+            postedDate: getRelativeDate(casting.created_at),
+            ageRange: firstRole?.ageRange || "Todas las edades",
+            union: "No sindicado",
+            description: casting.description,
+            roles: (casting.roles || []).map((role: any) => ({
+              id: role.id || Math.random().toString(),
+              name: role.name,
+              category: role.category || "Actores",
+              gender: role.gender || "All Genders",
+              ageRange: role.ageRange || "18-65",
+            })),
+            featured: false,
+          };
+        });
+
+        setProductions(transformedProductions);
+        setIsMockData(data.isMockData);
+
+        // Set staff picks (last 2 castings)
+        if (transformedProductions.length > 2) {
+          setStaffPicks(transformedProductions.slice(-2));
+        }
+      }
+    } catch (error) {
+      console.error("Error loading castings:", error);
+      setIsMockData(true);
+    }
+  };
+
+  const getRelativeDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    return `${Math.floor(diffDays / 30)} months ago`;
+  };
 
   const checkAuth = async () => {
     const supabase = createClient();
@@ -304,7 +367,17 @@ export default function CastingsPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Title */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Encuentra tu próximo casting</h1>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Encuentra tu próximo casting</h1>
+          {isMockData && (
+            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Mostrando ejemplos - Los productores pueden publicar castings reales desde su dashboard
+            </div>
+          )}
+        </div>
 
         {/* Filters */}
         <JobFilters onFilterChange={handleFilterChange} onSaveSearch={handleSaveSearch} />
