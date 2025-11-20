@@ -72,15 +72,18 @@ export default function StepRoles({ data, onUpdate, onSave, onNext }: StepRolesP
       ? data.roles.map((r: Role) => (r.id === editingRole.id ? { ...role, id: editingRole.id } : r))
       : [...data.roles, { ...role, id: Date.now().toString() }];
 
+    // First update the state
+    onUpdate({ roles: updatedRoles });
+
+    // Then close the form and save
     setShowForm(false);
     setSelectedCategory(null);
     setEditingRole(null);
 
-    // Update roles and trigger save after state update
-    onUpdate({ roles: updatedRoles }, () => {
-      // Save happens in callback after state is updated
+    // Save after a short delay to ensure state is updated
+    setTimeout(() => {
       onSave();
-    });
+    }, 100);
   };
 
   const handleEditRole = (role: Role) => {

@@ -89,11 +89,14 @@ export default function ProjectWizard({
 
       const data = await response.json();
       if (data.project) {
-        // Merge server response with current state to preserve all data
+        // Only update ID from server, keep all other data from current state
         setProjectData((prev) => ({
           ...prev,
-          ...data.project,
           id: data.project.id,
+          meta: {
+            ...prev.meta,
+            ...data.project.meta,
+          },
         }));
         setLastSaved(new Date());
         onSave(data.project);
@@ -108,23 +111,20 @@ export default function ProjectWizard({
   };
 
   const updateProjectData = (updates: Partial<ProjectData>, callback?: () => void) => {
-    setProjectData((prev) => {
-      const updated = {
-        ...prev,
-        ...updates,
-        meta: {
-          ...prev.meta,
-          updatedAt: new Date().toISOString(),
-        },
-      };
+    setProjectData((prev) => ({
+      ...prev,
+      ...updates,
+      meta: {
+        ...prev.meta,
+        updatedAt: new Date().toISOString(),
+      },
+    }));
 
-      // Execute callback after state update
-      if (callback) {
-        setTimeout(callback, 0);
-      }
-
-      return updated;
-    });
+    // Execute callback after state update (in next tick)
+    if (callback) {
+      // Use a microtask to ensure state update has been processed
+      Promise.resolve().then(callback);
+    }
   };
 
   const canProceedToStep = (step: number): boolean => {
