@@ -19,11 +19,22 @@ interface UserData {
   role: string;
 }
 
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  project_type: string;
+  location?: string;
+  created_at: string;
+  roles?: Array<{ id: string; name: string }>;
+}
+
 export default function ProductorPublicProfile() {
   const params = useParams();
   const router = useRouter();
   const [profile, setProfile] = useState<ProducerProfile | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -66,6 +77,16 @@ export default function ProductorPublicProfile() {
             .single();
 
           setProfile(producerProfile);
+
+          // Obtener proyectos publicados del productor
+          const { data: publishedProjects } = await supabase
+            .from("projects")
+            .select("id, title, description, project_type, location, created_at, roles")
+            .eq("user_id", params.id)
+            .eq("status", "published")
+            .order("created_at", { ascending: false });
+
+          setProjects(publishedProjects || []);
         }
       }
     } catch (error) {
@@ -230,6 +251,87 @@ export default function ProductorPublicProfile() {
                   IMDb
                 </a>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Proyectos Publicados */}
+        {projects.length > 0 && (
+          <div className="bg-white border border-border rounded-lg p-6 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold">Castings Activos</h2>
+              <span className="px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
+                {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"}
+              </span>
+            </div>
+            <div className="space-y-4">
+              {projects.map((project) => (
+                <div
+                  key={project.id}
+                  className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="font-semibold text-lg">{project.title}</h3>
+                    {project.project_type && (
+                      <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded">
+                        {project.project_type}
+                      </span>
+                    )}
+                  </div>
+                  {project.description && (
+                    <p className="text-sm text-text-muted mb-3 line-clamp-2">
+                      {project.description}
+                    </p>
+                  )}
+                  {project.roles && project.roles.length > 0 && (
+                    <div className="mb-3">
+                      <p className="text-xs font-medium text-gray-600 mb-2">
+                        Roles disponibles:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.roles.slice(0, 3).map((role: { id: string; name: string }) => (
+                          <span
+                            key={role.id}
+                            className="px-2 py-1 bg-white border border-gray-200 text-gray-700 text-xs rounded"
+                          >
+                            {role.name}
+                          </span>
+                        ))}
+                        {project.roles.length > 3 && (
+                          <span className="px-2 py-1 bg-gray-200 text-gray-600 text-xs rounded">
+                            +{project.roles.length - 3} más
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    {project.location && (
+                      <span className="text-xs text-text-muted flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {project.location}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => router.push(`/castings`)}
+                      className="text-xs text-primary font-semibold hover:underline"
+                    >
+                      Ver detalles →
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <button
+                onClick={() => router.push("/castings")}
+                className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-semibold"
+              >
+                Ver todos los castings
+              </button>
             </div>
           </div>
         )}
