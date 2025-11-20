@@ -94,6 +94,7 @@ function HomeContent() {
 
   useEffect(() => {
     filterTalents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGender, selectedSkill, talents]);
 
   const loadTalents = async () => {

@@ -196,8 +196,6 @@ const STAFF_PICKS: Production[] = [
 
 export default function CastingsPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"productions" | "roles">("productions");
   const [filters, setFilters] = useState<FilterValues>({
@@ -213,10 +211,12 @@ export default function CastingsPage() {
 
   useEffect(() => {
     checkAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     applyFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, productions]);
 
   const checkAuth = async () => {
@@ -229,8 +229,6 @@ export default function CastingsPage() {
       router.push("/login");
       return;
     }
-
-    setUser(user);
 
     // Get user role
     const { data: userData } = await supabase
@@ -245,7 +243,6 @@ export default function CastingsPage() {
       return;
     }
 
-    setUserRole(userData?.role || null);
     setIsLoading(false);
   };
 
