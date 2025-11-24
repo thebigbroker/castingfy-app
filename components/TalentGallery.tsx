@@ -24,10 +24,10 @@ export default function TalentGallery({ userId, isOwnProfile }: TalentGalleryPro
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
-  const [showUploadModal, setShowUploadModal] = useState(false);
 
   useEffect(() => {
     loadGallery();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const loadGallery = async () => {
@@ -94,7 +94,6 @@ export default function TalentGallery({ userId, isOwnProfile }: TalentGalleryPro
 
       if (galleryResponse.ok) {
         loadGallery();
-        setShowUploadModal(false);
       }
     } catch (error) {
       console.error("Error uploading image:", error);

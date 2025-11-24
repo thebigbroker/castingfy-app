@@ -45,6 +45,7 @@ export default function TalentReviews({
 
   useEffect(() => {
     loadReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [talentUserId]);
 
   const loadReviews = async () => {

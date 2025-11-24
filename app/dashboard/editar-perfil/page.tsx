@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import UploadcareUploader from "@/components/UploadcareUploader";
+import Image from "next/image";
 
 interface UserData {
   id: string;
@@ -197,11 +198,13 @@ export default function EditProfilePage() {
                 Imagen de portada
               </label>
               {formData.coverImageUrl && (
-                <div className="mb-4">
-                  <img
+                <div className="mb-4 relative w-full h-48">
+                  <Image
                     src={formData.coverImageUrl}
                     alt="Portada actual"
-                    className="w-full h-48 rounded-lg object-cover border-2 border-border"
+                    fill
+                    className="rounded-lg object-cover border-2 border-border"
+                    unoptimized
                   />
                 </div>
               )}
@@ -223,11 +226,13 @@ export default function EditProfilePage() {
                   Foto de perfil (Headshot)
                 </label>
                 {formData.headshotUrl && (
-                  <div className="mb-4">
-                    <img
+                  <div className="mb-4 relative w-32 h-32">
+                    <Image
                       src={formData.headshotUrl}
                       alt="Headshot actual"
-                      className="w-32 h-32 rounded-full object-cover border-4 border-border"
+                      fill
+                      className="rounded-full object-cover border-4 border-border"
+                      unoptimized
                     />
                   </div>
                 )}
