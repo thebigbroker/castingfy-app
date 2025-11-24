@@ -137,12 +137,14 @@ export default function DashboardPage() {
                 >
                   Mi Red
                 </button>
-                <button
-                  onClick={() => router.push("/producciones")}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  Producciones
-                </button>
+                {userData?.role === "productor" && (
+                  <button
+                    onClick={() => router.push("/producciones")}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    Producciones
+                  </button>
+                )}
               </nav>
             </div>
 
@@ -203,15 +205,17 @@ export default function DashboardPage() {
                 >
                   Mi Red
                 </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    router.push("/producciones");
-                  }}
-                  className="px-4 py-3 text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-colors text-left"
-                >
-                  Producciones
-                </button>
+                {userData?.role === "productor" && (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      router.push("/producciones");
+                    }}
+                    className="px-4 py-3 text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-colors text-left"
+                  >
+                    Producciones
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);

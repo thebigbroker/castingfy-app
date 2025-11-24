@@ -75,11 +75,11 @@ export default function ProfileHeader({ user, profile, isOwnProfile, currentUser
         )}
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 -mt-20 relative">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div className="max-w-6xl mx-auto px-6 -mt-16 sm:-mt-20 relative">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6">
           {/* Avatar y nombre */}
           <div className="flex flex-col md:flex-row items-center md:items-end gap-4">
-            <div className="w-40 h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white relative">
+            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white relative flex-shrink-0">
               <Image
                 src={avatarUrl}
                 alt={displayName}
@@ -89,14 +89,14 @@ export default function ProfileHeader({ user, profile, isOwnProfile, currentUser
               />
             </div>
 
-            <div className="text-center md:text-left mb-4">
-              <h1 className="text-3xl font-bold">{displayName}</h1>
-              <p className="text-text-muted">
+            <div className="text-center md:text-left md:mb-4 bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+              <h1 className="text-2xl sm:text-3xl font-bold text-black">{displayName}</h1>
+              <p className="text-gray-600 font-medium">
                 {user.role === "talento" ? "Talento" : "Productor"}
                 {profile?.location && ` · ${profile.location}`}
               </p>
               {profile?.bio && (
-                <p className="text-sm text-text-muted mt-2 max-w-2xl">{profile.bio}</p>
+                <p className="text-sm text-gray-600 mt-2 max-w-2xl line-clamp-2">{profile.bio}</p>
               )}
             </div>
           </div>

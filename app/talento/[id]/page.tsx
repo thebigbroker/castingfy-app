@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import PublicProfileCTA from "@/components/PublicProfileCTA";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 interface TalentProfile {
   stage_name: string;
@@ -108,40 +110,8 @@ export default function TalentoPublicProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-surface">
-      {/* Header */}
-      <div className="bg-white border-b border-border">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🎬</span>
-            <h1 className="text-xl font-bold">Castingfy</h1>
-          </div>
-          {!isAuthenticated && (
-            <div className="flex gap-3">
-              <button
-                onClick={() => router.push("/login")}
-                className="px-4 py-2 text-sm font-medium text-text hover:bg-surface rounded-lg transition-colors"
-              >
-                Iniciar sesión
-              </button>
-              <button
-                onClick={() => router.push("/registro")}
-                className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Registrarse
-              </button>
-            </div>
-          )}
-          {isAuthenticated && (
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Ir al Dashboard
-            </button>
-          )}
-        </div>
-      </div>
+    <>
+      <Header variant="light" />
 
       {/* Profile Content */}
       <div className="max-w-5xl mx-auto px-6 py-8">
@@ -324,6 +294,7 @@ export default function TalentoPublicProfile() {
 
       {/* CTA Overlay for non-authenticated users */}
       {!isAuthenticated && <PublicProfileCTA profileType="talent" />}
-    </div>
+      <Footer />
+    </>
   );
 }

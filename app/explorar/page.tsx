@@ -253,7 +253,7 @@ export default function ExplorarPage() {
                   : "bg-surface hover:bg-border"
               }`}
             >
-              Productores
+              Agencias de casting/productoras
             </button>
             <button
               onClick={() => setRoleFilter("favorites")}
