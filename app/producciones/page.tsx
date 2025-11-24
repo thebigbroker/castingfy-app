@@ -90,12 +90,44 @@ export default function ProduccionesPage() {
     }
   };
 
+  const handleTogglePublish = async (project: Project, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    const isPublishing = project.status === "draft";
+    const confirmMessage = isPublishing
+      ? "¿Publicar este casting? Se hará visible en la plataforma."
+      : "¿Despublicar este casting? Dejará de ser visible.";
+
+    if (!confirm(confirmMessage)) return;
+
+    try {
+      const response = await fetch("/api/projects", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectId: project.id,
+          status: isPublishing ? "published" : "draft",
+        }),
+      });
+
+      if (response.ok) {
+        loadProjects();
+      } else {
+        alert("Error al actualizar el proyecto");
+      }
+    } catch (error) {
+      console.error("Error toggling publish status:", error);
+      alert("Error al actualizar el proyecto");
+    }
+  };
+
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       draft: "bg-gray-100 text-gray-700",
-      active: "bg-green-100 text-green-700",
-      casting: "bg-blue-100 text-blue-700",
-      production: "bg-purple-100 text-purple-700",
+      published: "bg-green-100 text-green-700",
+      active: "bg-blue-100 text-blue-700",
+      casting: "bg-purple-100 text-purple-700",
+      production: "bg-orange-100 text-orange-700",
       completed: "bg-teal-100 text-teal-700",
       archived: "bg-red-100 text-red-700",
     };
@@ -105,6 +137,7 @@ export default function ProduccionesPage() {
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
       draft: "Borrador",
+      published: "Publicado",
       active: "Activo",
       casting: "En Casting",
       production: "En Producción",
@@ -233,6 +266,63 @@ export default function ProduccionesPage() {
                     {getStatusLabel(project.status)}
                   </span>
                   <div className="flex items-center gap-2">
+                    {/* Publish/Unpublish button */}
+                    <button
+                      onClick={(e) => handleTogglePublish(project, e)}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                        project.status === "draft"
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : project.status === "published"
+                          ? "bg-gray-500 text-white hover:bg-gray-600"
+                          : "bg-blue-500 text-white hover:bg-blue-600"
+                      }`}
+                      title={
+                        project.status === "draft"
+                          ? "Publicar casting"
+                          : project.status === "published"
+                          ? "Despublicar casting"
+                          : "Publicar"
+                      }
+                    >
+                      {project.status === "draft" ? (
+                        <>
+                          <svg
+                            className="w-3 h-3 inline mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          Publicar
+                        </>
+                      ) : project.status === "published" ? (
+                        <>
+                          <svg
+                            className="w-3 h-3 inline mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                            />
+                          </svg>
+                          Ocultar
+                        </>
+                      ) : (
+                        "Publicar"
+                      )}
+                    </button>
+
                     {project.status === "draft" && (
                       <button
                         onClick={(e) => {
