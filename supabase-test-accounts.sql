@@ -176,7 +176,7 @@ BEGIN
     talent_uuid,
     talent_email,
     'talento',
-    'active',
+    'verified',
     NOW(),
     NOW()
   )
@@ -188,7 +188,7 @@ BEGIN
     producer_uuid,
     producer_email,
     'productor',
-    'active',
+    'verified',
     NOW(),
     NOW()
   )
