@@ -8,6 +8,8 @@ import CreatePost from "@/components/CreatePost";
 import PostsFeed from "@/components/PostsFeed";
 import InstagramFeed from "@/components/InstagramFeed";
 import IMDBFeed from "@/components/IMDBFeed";
+import TalentGallery from "@/components/TalentGallery";
+import TalentReviews from "@/components/TalentReviews";
 import type { User } from "@supabase/supabase-js";
 
 interface UserData {
@@ -318,6 +320,26 @@ export default function DashboardPage() {
 
           {/* Columna central - Posts */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Galería (solo para talentos) */}
+            {user && userData?.role === "talento" && (
+              <TalentGallery userId={user.id} isOwnProfile={true} />
+            )}
+
+            {/* Reviews (solo para talentos) */}
+            {user && userData?.role === "talento" && profile && (
+              <TalentReviews
+                talentUserId={user.id}
+                currentUserId={user.id}
+                currentUserRole={userData.role}
+                averageRating={
+                  (profile as { average_rating?: number }).average_rating || 0
+                }
+                totalReviews={
+                  (profile as { total_reviews?: number }).total_reviews || 0
+                }
+              />
+            )}
+
             {/* Crear post */}
             {user && <CreatePost userId={user.id} onPostCreated={handlePostCreated} />}
 

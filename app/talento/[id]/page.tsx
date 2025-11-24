@@ -7,6 +7,8 @@ import Image from "next/image";
 import PublicProfileCTA from "@/components/PublicProfileCTA";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import TalentGallery from "@/components/TalentGallery";
+import TalentReviews from "@/components/TalentReviews";
 
 interface TalentProfile {
   stage_name: string;
@@ -15,6 +17,8 @@ interface TalentProfile {
   location: string | null;
   instagram_url: string | null;
   imdb_url: string | null;
+  average_rating?: number;
+  total_reviews?: number;
 }
 
 interface UserData {
@@ -30,6 +34,7 @@ export default function TalentoPublicProfile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ id: string; role: string } | null>(null);
 
   useEffect(() => {
     loadProfile();
@@ -44,6 +49,19 @@ export default function TalentoPublicProfile() {
     } = await supabase.auth.getUser();
 
     setIsAuthenticated(!!user);
+
+    if (user) {
+      // Get user role
+      const { data: dbUser } = await supabase
+        .from("users")
+        .select("id, role")
+        .eq("id", user.id)
+        .single();
+
+      if (dbUser) {
+        setCurrentUser({ id: dbUser.id, role: dbUser.role });
+      }
+    }
   };
 
   const loadProfile = async () => {
@@ -216,6 +234,25 @@ export default function TalentoPublicProfile() {
             </div>
           </div>
         )}
+
+        {/* Galería */}
+        <div className="mb-6">
+          <TalentGallery
+            userId={params.id as string}
+            isOwnProfile={false}
+          />
+        </div>
+
+        {/* Reviews */}
+        <div className="mb-6">
+          <TalentReviews
+            talentUserId={params.id as string}
+            currentUserId={currentUser?.id}
+            currentUserRole={currentUser?.role}
+            averageRating={profile.average_rating || 0}
+            totalReviews={profile.total_reviews || 0}
+          />
+        </div>
 
         {/* Gate para ver más información */}
         {!isAuthenticated && (
