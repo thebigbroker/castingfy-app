@@ -55,23 +55,11 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Refresh the session
+  await supabase.auth.getUser();
 
-  // Protected routes
-  if (!user && request.nextUrl.pathname.startsWith("/dashboard")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
-
-  // Redirect logged-in users away from auth pages
-  if (user && (request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/registro"))) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
-  }
+  // Don't redirect on protected routes - let pages handle auth
+  // This allows cookies to refresh without forcing redirects
 
   return response;
 }
